@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    struct Point
+    public struct Point
     {
         public int i;
         public int j;
