@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public class Bitmap
+    public class GrayscaleBitmap
     {
         public int Width
         {

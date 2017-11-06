@@ -8,7 +8,7 @@ namespace CTSliceReconstruction
 {
     public abstract class ProjectionHandler
     {
-        public List<double[]> GenerateProjections(Bitmap bmp, int sliceCount)
+        public List<double[]> GenerateProjections(GrayscaleBitmap bmp, int sliceCount)
         {
             if (sliceCount < 1)
             {
@@ -29,7 +29,7 @@ namespace CTSliceReconstruction
             return projections;
         }
 
-        public double[] CreateProjection(Bitmap bmp, double angle)
+        public double[] CreateProjection(GrayscaleBitmap bmp, double angle)
         {
             int n = bmp.Width;
             double[] projection = new double[n];
@@ -42,7 +42,7 @@ namespace CTSliceReconstruction
             return projection;
         }
 
-        private double calculateProjectionAtPosition(double angle, Bitmap bmp, int position)
+        private double calculateProjectionAtPosition(double angle, GrayscaleBitmap bmp, int position)
         {
             Dictionary<Point, double> line = generateLine(angle, bmp.Width, position);
 
@@ -56,7 +56,7 @@ namespace CTSliceReconstruction
             return result;
         }
 
-        public Bitmap ExtrudeProjection(double[] projection, double angle)
+        public GrayscaleBitmap ExtrudeProjection(double[] projection, double angle)
         {
             return null;
         }
