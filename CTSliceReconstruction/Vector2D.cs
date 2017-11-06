@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public struct Point
+    class Vector2D
     {
-        public int i;
-        public int j;
+        public double x;
+        public double y;
 
-        public Point(int i, int j)
+        public Vector2D(double x, double y)
         {
-            this.i = i;
-            this.j = j;
+            this.x = x;
+            this.y = y;
         }
     }
 }

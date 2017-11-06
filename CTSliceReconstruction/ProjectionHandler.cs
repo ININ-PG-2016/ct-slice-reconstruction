@@ -44,13 +44,13 @@ namespace CTSliceReconstruction
 
         private double calculateProjectionAtPosition(double angle, GrayscaleBitmap bmp, int position)
         {
-            Dictionary<Point, double> line = generateLine(angle, bmp.Width, position);
+            List<PixelInfo> line = generateLine(angle, bmp.Width, position);
 
             double result = 0.0;
 
-            foreach(var point in line)
+            foreach(PixelInfo pixel in line)
             {
-                result += point.Value * bmp[point.Key];
+                result += pixel.weight * bmp[pixel.position];
             }
 
             return result;
@@ -61,6 +61,6 @@ namespace CTSliceReconstruction
             return null;
         }
 
-        protected abstract Dictionary<Point, double> generateLine(double angle, int n, int position);
+        protected abstract List<PixelInfo> generateLine(double angle, int n, int position);
     }
 }
