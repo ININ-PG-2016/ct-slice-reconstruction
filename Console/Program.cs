@@ -40,11 +40,12 @@ namespace ConsoleApp
             GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
             ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
             Console.WriteLine("Generating projections");
-            int angle = 5;
+            int angle = 1;
             List<double[]> projections = projectionHandler.GenerateProjections(bmp, 180 / angle);
             IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler);
             Console.WriteLine("Reconstructing");
-            GrayscaleBitmap result = reconstructor.Reconstruct(100);
+            GrayscaleBitmap result = reconstructor.Reconstruct(500);
+            GrayscaleBitmap error = new GrayscaleBitmap(bmp.Width, bmp.Height);
             for (int i = 0; i < result.Width; i++)
             {
                 for (int j = 0; j < result.Height; j++)
@@ -53,9 +54,11 @@ namespace ConsoleApp
                         result[i, j] = 0;
                     if (result[i, j] > 1)
                         result[i, j] = 1;
+                    error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
                 }
             }
             result.SaveToFile(outputFilename);
+            error.SaveToFile(outputFilename + ".error.bmp");
         }
     }
 }
