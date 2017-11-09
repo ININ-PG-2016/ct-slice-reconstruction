@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrayscaleBitmap.cs" />
+    <Compile Include="IterativeSliceReconstructor.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="PixelInfo.cs" />
     <Compile Include="Point.cs" />

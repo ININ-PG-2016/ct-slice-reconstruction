@@ -28,12 +28,31 @@ namespace ConsoleApp
 
             bmp.SaveToFile("pokus.bmp");*/
 
-            GrayscaleBitmap bmp = new GrayscaleBitmap("star.png");
+            /*GrayscaleBitmap bmp = new GrayscaleBitmap("star.png");
             double angle = 0;
             ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
             double[] projection = projectionHandler.CreateProjection(bmp, angle);
             GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
-            projectedBmp.SaveToFile("projected.bmp");
+            projectedBmp.SaveToFile("projected.bmp");*/
+
+            GrayscaleBitmap bmp = new GrayscaleBitmap("star2.png");
+            ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
+            Console.WriteLine("Generating projections");
+            List<double[]> projections = projectionHandler.GenerateProjections(bmp, 180 / 5);
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, 5, projectionHandler);
+            Console.WriteLine("Reconstructing");
+            GrayscaleBitmap result = reconstructor.Reconstruct(100);
+            for (int i = 0; i < result.Width; i++)
+            {
+                for (int j = 0; j < result.Height; j++)
+                {
+                    if (result[i, j] < 0)
+                        result[i, j] = 0;
+                    if (result[i, j] > 1)
+                        result[i, j] = 1;
+                }
+            }
+            result.SaveToFile("result2.bmp");
         }
     }
 }
