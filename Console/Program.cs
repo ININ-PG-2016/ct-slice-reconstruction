@@ -35,11 +35,14 @@ namespace ConsoleApp
             GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
             projectedBmp.SaveToFile("projected.bmp");*/
 
-            GrayscaleBitmap bmp = new GrayscaleBitmap("star2.png");
+            String inputFilename = args.Length >= 1 ? args[0] : "star2.png";
+            String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
+            GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
             ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
             Console.WriteLine("Generating projections");
-            List<double[]> projections = projectionHandler.GenerateProjections(bmp, 180 / 5);
-            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, 5, projectionHandler);
+            int angle = 5;
+            List<double[]> projections = projectionHandler.GenerateProjections(bmp, 180 / angle);
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler);
             Console.WriteLine("Reconstructing");
             GrayscaleBitmap result = reconstructor.Reconstruct(100);
             for (int i = 0; i < result.Width; i++)
@@ -52,7 +55,7 @@ namespace ConsoleApp
                         result[i, j] = 1;
                 }
             }
-            result.SaveToFile("result2.bmp");
+            result.SaveToFile(outputFilename);
         }
     }
 }

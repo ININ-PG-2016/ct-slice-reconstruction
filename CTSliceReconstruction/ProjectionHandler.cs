@@ -73,15 +73,18 @@ namespace CTSliceReconstruction
                     Point position = line[j].position;
                     double relativeWeight = line[j].weight / weightSum;
                     double value = (relativeWeight * projection[i]) / line[j].weight;
-                    if (occupied[position.i, position.j])
+                    if (!double.IsNaN(value))
                     {
-                        bmp[position] = (bmp[position] + value) / 2;
+                        if (occupied[position.i, position.j])
+                        {
+                            bmp[position] = (bmp[position] + value) / 2;
+                        }
+                        else
+                        {
+                            bmp[position] = value;
+                        }
+                        occupied[position.i, position.j] = true;
                     }
-                    else
-                    {
-                        bmp[position] = value;
-                    }
-                    occupied[position.i, position.j] = true;
                 }
             }
             return bmp;
