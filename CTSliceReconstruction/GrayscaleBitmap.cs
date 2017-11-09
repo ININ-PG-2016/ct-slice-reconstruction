@@ -112,7 +112,7 @@ namespace CTSliceReconstruction
                     return 0.0;
                 }
 
-                return data[i * (Width) + j];
+                return data[j * (Width) + i];
             }
 
             set
@@ -128,7 +128,7 @@ namespace CTSliceReconstruction
                     return;
                 }
 
-                data[i * (Width) + j] = value;
+                data[j * (Width) + i] = value;
             }
         }
 
@@ -171,7 +171,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    bytes[i * data.Stride + j] = (byte)(this[i, j] * 255.0);
+                    bytes[j * data.Stride + i] = (byte)(this[i, j] * 255.0);
                 }
             }
 

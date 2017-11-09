@@ -58,9 +58,35 @@ namespace CTSliceReconstruction
 
         public GrayscaleBitmap ExtrudeProjection(double[] projection, double angle)
         {
-            return null;
+            GrayscaleBitmap bmp = new GrayscaleBitmap(projection.Length, projection.Length);
+            bool[,] occupied = new bool[projection.Length, projection.Length];
+            for (int i = 0; i < projection.Length; i++)
+            {
+                List<PixelInfo> line = generateLine(angle, projection.Length, i);
+                double weightSum = 0;
+                for (int j = 0; j < line.Count; j++)
+                {
+                    weightSum += line[j].weight;
+                }
+                for (int j = 0; j < line.Count; j++)
+                {
+                    Point position = line[j].position;
+                    double relativeWeight = line[j].weight / weightSum;
+                    double value = (relativeWeight * projection[i]) / line[j].weight;
+                    if (occupied[position.i, position.j])
+                    {
+                        bmp[position] = (bmp[position] + value) / 2;
+                    }
+                    else
+                    {
+                        bmp[position] = value;
+                    }
+                    occupied[position.i, position.j] = true;
+                }
+            }
+            return bmp;
         }
 
-        protected abstract List<PixelInfo> generateLine(double angle, int n, int position);
+        public abstract List<PixelInfo> generateLine(double angle, int n, int position);
     }
 }

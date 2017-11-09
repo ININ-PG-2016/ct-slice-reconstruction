@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    class ProjectionHandlerRaycast : ProjectionHandler
+    public class ProjectionHandlerRaycast : ProjectionHandler
     {
-        protected override List<PixelInfo> generateLine(double angle, int n, int position)
+        public override List<PixelInfo> generateLine(double angle, int n, int position)
         {
             double radAngle = angle * (Math.PI / 180);
             Vector2D direction = new Vector2D(Math.Cos(radAngle), Math.Sin(radAngle));

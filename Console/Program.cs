@@ -28,8 +28,12 @@ namespace ConsoleApp
 
             bmp.SaveToFile("pokus.bmp");*/
 
-            GrayscaleBitmap bmp = new GrayscaleBitmap("pic.jpg");
-            bmp.SaveToFile("pokus2.bmp");
+            GrayscaleBitmap bmp = new GrayscaleBitmap("star.png");
+            double angle = 0;
+            ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
+            double[] projection = projectionHandler.CreateProjection(bmp, angle);
+            GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
+            projectedBmp.SaveToFile("projected.bmp");
         }
     }
 }
