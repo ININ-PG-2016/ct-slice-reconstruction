@@ -11,7 +11,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            GrayscaleBitmap bmp = new GrayscaleBitmap(1024,1024);
+            /*GrayscaleBitmap bmp = new GrayscaleBitmap(1024,1024);
 
             Console.WriteLine(bmp.Width);
             Console.WriteLine(bmp.Height);
@@ -26,7 +26,10 @@ namespace ConsoleApp
 
             bmp.Stretch();
 
-            bmp.SaveToFile("pokus.bmp");
+            bmp.SaveToFile("pokus.bmp");*/
+
+            GrayscaleBitmap bmp = new GrayscaleBitmap("pic.jpg");
+            bmp.SaveToFile("pokus2.bmp");
         }
     }
 }

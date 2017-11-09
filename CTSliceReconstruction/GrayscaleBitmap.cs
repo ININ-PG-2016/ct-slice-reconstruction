@@ -22,7 +22,8 @@ namespace CTSliceReconstruction
             //Only supported format is 8bpp Indexed
             if (bmp.PixelFormat != PixelFormat.Format8bppIndexed)
             {
-                throw new Exception("Unsupported pixel format of the image. Only 8bbp gray level format is supported.");
+                this.bmp = convertToGrayscale(this.bmp);
+                //throw new Exception("Unsupported pixel format of the image. Only 8bbp gray level format is supported.");
             }
 
             Width = bmp.Width;
@@ -52,6 +53,24 @@ namespace CTSliceReconstruction
                     data[i * Width + j] = ((double)byteData[i * actualWidth + j]) / 255.0;
                 }
             }
+        }
+
+        private System.Drawing.Bitmap convertToGrayscale(System.Drawing.Bitmap bmp)
+        {
+            /*System.Drawing.Bitmap newBmp = new System.Drawing.Bitmap(bmp.Width, bmp.Height, PixelFormat.Format8bppIndexed);
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            BitmapData bmpData = newBmp.LockBits(rect, ImageLockMode.WriteOnly, newBmp.PixelFormat);
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    Color col = bmp.GetPixel(i, j);
+                    int grayLevel = (col.R + col.G + col.B) / 3;
+
+                }
+            }
+            return newBmp;*/
+            return AForge.Imaging.Filters.Grayscale.CommonAlgorithms.BT709.Apply(bmp);
         }
 
         /// <summary>
