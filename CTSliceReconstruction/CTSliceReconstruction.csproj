@@ -58,6 +58,7 @@
     <Compile Include="Line.cs" />
     <Compile Include="PixelInfo.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="ProjectionHandlerBresenham.cs" />
     <Compile Include="ProjectionHandlerRaycast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProjectionHandler.cs" />
