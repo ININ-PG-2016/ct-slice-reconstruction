@@ -189,6 +189,26 @@ namespace CTSliceReconstruction
             bmp.UnlockBits(data);
         }
 
+        public static GrayscaleBitmap operator + (GrayscaleBitmap bmp1, GrayscaleBitmap bmp2)
+        {
+            if (bmp1.Width != bmp2.Width || bmp1.Height != bmp2.Height)
+            {
+                throw new ArgumentException("Bitmaps must have same dimensions");
+            }
+
+            GrayscaleBitmap result = new GrayscaleBitmap(bmp1.Width, bmp1.Height);
+
+            for (int i = 0; i < result.Height; i++)
+            {
+                for (int j = 0; j < result.Width; j++)
+                {
+                    result[i, j] = bmp1[i, j] + bmp2[i, j];
+                }
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Save bitmap to file
         /// </summary>

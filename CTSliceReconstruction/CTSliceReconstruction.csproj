@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackProjectionSliceReconstructor.cs" />
     <Compile Include="GrayscaleBitmap.cs" />
     <Compile Include="IterativeSliceReconstructor.cs" />
     <Compile Include="Line.cs" />
