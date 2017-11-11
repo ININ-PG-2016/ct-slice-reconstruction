@@ -11,12 +11,14 @@ namespace CTSliceReconstruction
         private List<double[]> projections;
         private double angleBetweenProjections;
         private ProjectionHandler projectionHandler;
+        private bool allowNegativeValues;
 
-        public IterativeSliceReconstructor(List<double[]> projections, double angleBetweenProjections, ProjectionHandler projectionHandler)
+        public IterativeSliceReconstructor(List<double[]> projections, double angleBetweenProjections, ProjectionHandler projectionHandler, bool allowNegativeValues = true)
         {
             this.angleBetweenProjections = angleBetweenProjections;
             this.projections = projections;
             this.projectionHandler = projectionHandler;
+            this.allowNegativeValues = allowNegativeValues;
         }
 
         private void performOneIteration(int angleIndex, GrayscaleBitmap bmp)
@@ -33,6 +35,8 @@ namespace CTSliceReconstruction
                 for (int j = 0; j < bmp.Height; j++)
                 {
                     bmp[i, j] += errorBmp[i, j];
+                    if (!allowNegativeValues && bmp[i, j] < 0)
+                        bmp[i, j] = 0;
                 }
             }
         }
@@ -40,12 +44,16 @@ namespace CTSliceReconstruction
         public GrayscaleBitmap Reconstruct(int iterationCount)
         {
             int size = projections[0].Length;
+            double avrg = 0;
+            for (int i = 0; i < projections[0].Length; i++)
+                avrg += projections[0][i];
+            avrg /= (size * size);
             GrayscaleBitmap bmp = new GrayscaleBitmap(size, size);
             for (int i = 0; i < bmp.Width; i++)
             {
                 for (int j = 0; j < bmp.Height; j++)
                 {
-                    bmp[i, j] = 0.5;
+                    bmp[i, j] = avrg;
                 }
             }
             for (int i = 0; i < iterationCount; i++)
