@@ -38,14 +38,32 @@ namespace ConsoleApp
             String inputFilename = args.Length >= 1 ? args[0] : "Shapes.bmp";
             String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
             GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+            /*GrayscaleBitmap bmp = new GrayscaleBitmap(500, 500);
+            double begin = -bmp.Width / 2.0;
+            double end = bmp.Width / 2.0;
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    double x = (i + begin) / (bmp.Width / 2.0);
+                    double y = (j + begin) / (bmp.Width / 2.0);
+                    double value = x * x + y * y;
+                    if (value > 1)
+                        bmp[i, j] = 0;
+                    else
+                        bmp[i, j] = value;
+                }
+            }
+            bmp.SaveToFile("paraboloid.bmp");*/
             ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
             Console.WriteLine("Generating projections");
             double angle = 1;
             List<double[]> projections = projectionHandler.GenerateProjections(bmp, (int)(180.0 / angle));
-            //IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler, false);
-            BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, projectionHandler);
+            //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler, false);
+            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, projectionHandler);
             Console.WriteLine("Reconstructing");
-            GrayscaleBitmap result = reconstructor.Reconstruct();
+            GrayscaleBitmap result = reconstructor.Reconstruct(500);
             //GrayscaleBitmap result = reconstructor.Reconstruct(500);
             GrayscaleBitmap error = new GrayscaleBitmap(bmp.Width, bmp.Height);
             for (int i = 0; i < result.Width; i++)
