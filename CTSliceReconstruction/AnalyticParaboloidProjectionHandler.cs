@@ -33,7 +33,8 @@ namespace CTSliceReconstruction
             for (int i = 0; i < sliceCount; i++)
             {
                 double angle = i * angleStep;
-                projections.Add(projection);
+                double[] projectionCopy = (double[])projection.Clone();
+                projections.Add(projectionCopy);
             }
 
             return projections;

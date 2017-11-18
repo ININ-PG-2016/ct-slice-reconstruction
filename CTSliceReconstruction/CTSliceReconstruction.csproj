@@ -58,6 +58,7 @@
     <Compile Include="GrayscaleBitmap.cs" />
     <Compile Include="IterativeSliceReconstructor.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="NoiseMaker.cs" />
     <Compile Include="PixelInfo.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="ProjectionHandlerBresenham.cs" />
