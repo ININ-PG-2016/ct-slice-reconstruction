@@ -14,11 +14,28 @@ namespace CTSliceReconstruction
             Line ray = calculateRay(angle, n, position);
 
             //Calculate intersections with bounding box
-            getInteresctionsWithBitmapBoundary(ray, n);
+            List<Point> intersections = getInteresctionsWithBitmapBoundary(ray, n);
+
+            List<PixelInfo> line;
+
+            if (intersections.Count == 1)
+            {
+
+                line = new List<PixelInfo>();
+                Point point = intersections[0];
+
+                line.Add(new PixelInfo(point.i, point.j, 1.0));
+            }
+            else
+            {
+                Point p0 = intersections[0];
+                Point p1 = intersections[1];
+
+                line = bresenhamLine(p0.i, p0.j, p1.i, p1.j);
+            }
 
             //Calculate intersected pixels on boundary
-            throw new NotImplementedException();
-            return null;
+            return line;
         }
 
         private Line calculateRay(double angle, int n, int position)
@@ -35,8 +52,8 @@ namespace CTSliceReconstruction
 
         private List<Point> getInteresctionsWithBitmapBoundary(Line ray, int n)
         {
-            double min = -n / 2.0 + 0.5;
-            double max = n / 2.0 - 0.5;
+            double min = -n / 2.0;
+            double max = n / 2.0;
 
             List<Vector2D> intersections = new List<Vector2D>();
 
@@ -57,7 +74,19 @@ namespace CTSliceReconstruction
 
             foreach(var intersection in intersections)
             {
-                intersectionPoints.Add(new Point((int) (Math.Round(intersection.x - min)), (int) (Math.Round(intersection.y - min))));
+                Point p = new Point((int)(Math.Round(intersection.x - min)), (int)(Math.Round(intersection.y - min)));
+
+                if (p.i == n)
+                {
+                    p.i = n - 1;
+                }
+
+                if (p.j == n)
+                {
+                    p.j = n - 1;
+                }
+
+                intersectionPoints.Add(p);
             }
 
             return intersectionPoints;
@@ -88,7 +117,36 @@ namespace CTSliceReconstruction
 
         public List<PixelInfo> bresenhamLine(int x0, int y0, int x1, int y1)
         {
-            return null;
+            List<PixelInfo> line = new List<PixelInfo>();
+
+            double deltaX = x1 - x0;
+            double deltaY = y1 - y0;
+
+            if (deltaX == 0)
+            {
+                return VerticalLine(x0, (int)Math.Abs(deltaY));
+            }
+
+            double deltaErr = Math.Abs(deltaY / deltaX);
+
+            double error = 0.0;
+
+            int y = y0;
+
+            for (int x = x0; x <= x1; x++)
+            {
+                line.Add(new PixelInfo(x, y, 1.0));
+
+                error += deltaErr;
+
+                while (error >= 0.5)
+                {
+                    y += Math.Sign(deltaY);
+                    error -= 1.0;
+                }
+            }
+
+            return line;
         }
 
         private List<PixelInfo> VerticalLine(int x, int n)

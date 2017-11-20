@@ -16,5 +16,10 @@ namespace CTSliceReconstruction
             this.position = new Point(i, j);
             this.weight = weight;
         }
+
+        public override string ToString()
+        {
+            return position + " - " + weight;
+        }
     }
 }

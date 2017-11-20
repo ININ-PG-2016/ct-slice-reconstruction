@@ -16,5 +16,10 @@ namespace CTSliceReconstruction
             this.i = i;
             this.j = j;
         }
+
+        public override string ToString()
+        {
+            return "[" + i + " ; " + j + "]";
+        }
     }
 }
