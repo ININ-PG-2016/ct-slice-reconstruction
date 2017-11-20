@@ -35,35 +35,55 @@ namespace ConsoleApp
             GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
             projectedBmp.SaveToFile("projected.bmp");*/
 
-            //String inputFilename = args.Length >= 1 ? args[0] : "Shapes.bmp";
-            //String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
-            //GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
-            //ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
-            //Console.WriteLine("Generating projections");
-            //double angle = 18;
-            //List<double[]> projections = projectionHandler.GenerateProjections(bmp, (int)(180.0 / angle));
+            String inputFilename = args.Length >= 1 ? args[0] : "Shapes.bmp";
+            String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
+            GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+            /*GrayscaleBitmap bmp = new GrayscaleBitmap(500, 500);
+            double begin = -bmp.Width / 2.0;
+            double end = bmp.Width / 2.0;
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    double x = (i + begin) / (bmp.Width / 2.0);
+                    double y = (j + begin) / (bmp.Width / 2.0);
+                    double value = x * x + y * y;
+                    if (value > 1)
+                        bmp[i, j] = 0;
+                    else
+                        bmp[i, j] = value;
+                }
+            }
+            bmp.SaveToFile("paraboloid.bmp");*/
+            ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
+            Console.WriteLine("Generating projections");
+            double angle = 1;
+            List<double[]> projections = projectionHandler.GenerateProjections(bmp, (int)(180.0 / angle));
+            //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler, false);
             //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, projectionHandler);
-            //Console.WriteLine("Reconstructing");
-            //GrayscaleBitmap result = reconstructor.Reconstruct();
-            //GrayscaleBitmap error = new GrayscaleBitmap(bmp.Width, bmp.Height);
-            //for (int i = 0; i < result.Width; i++)
-            //{
-            //    for (int j = 0; j < result.Height; j++)
-            //    {
-            //        if (result[i, j] < 0)
-            //            result[i, j] = 0;
-            //        if (result[i, j] > 1)
-            //            result[i, j] = 1;
-            //        error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
-            //    }
-            //}
-            //result.SaveToFile(outputFilename);
-            //error.SaveToFile(outputFilename + ".error.bmp");
+            Console.WriteLine("Reconstructing");
+            GrayscaleBitmap result = reconstructor.Reconstruct(500);
+            //GrayscaleBitmap result = reconstructor.Reconstruct(500);
+            GrayscaleBitmap error = new GrayscaleBitmap(bmp.Width, bmp.Height);
+            for (int i = 0; i < result.Width; i++)
+            {
+                for (int j = 0; j < result.Height; j++)
+                {
+                    if (result[i, j] < 0)
+                        result[i, j] = 0;
+                    if (result[i, j] > 1)
+                        result[i, j] = 1;
+                    error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
+                }
+            }
+            result.SaveToFile(outputFilename);
+            error.SaveToFile(outputFilename + ".error.bmp");
 
-            ProjectionHandlerBresenham handler = new ProjectionHandlerBresenham();
+            /*ProjectionHandlerBresenham handler = new ProjectionHandlerBresenham();
             handler.generateLine(0.0, 25, 0);
             handler.generateLine(0.0, 25, 13);
-            handler.generateLine(45, 25, 12);
+            handler.generateLine(45, 25, 12);*/
         }
     }
 }
