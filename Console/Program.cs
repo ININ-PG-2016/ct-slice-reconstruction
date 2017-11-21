@@ -55,16 +55,16 @@ namespace ConsoleApp
                 }
             }
             bmp.SaveToFile("paraboloid.bmp");*/
-            ProjectionHandler projectionHandler = new ProjectionHandlerRaycast();
             Console.WriteLine("Generating projections");
             double angle = 1;
-            List<double[]> projections = projectionHandler.GenerateProjections(bmp, (int)(180.0 / angle));
+            List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
+            //Filter1D.GetHammingFilter3().Apply(projections);
             //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
-            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, projectionHandler, false);
-            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, projectionHandler);
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
+            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
             Console.WriteLine("Reconstructing");
-            GrayscaleBitmap result = reconstructor.Reconstruct(500);
-            //GrayscaleBitmap result = reconstructor.Reconstruct(500);
+            GrayscaleBitmap result = reconstructor.Reconstruct(540);
+            //GrayscaleBitmap result = reconstructor.Reconstruct();
             GrayscaleBitmap error = new GrayscaleBitmap(bmp.Width, bmp.Height);
             for (int i = 0; i < result.Width; i++)
             {
