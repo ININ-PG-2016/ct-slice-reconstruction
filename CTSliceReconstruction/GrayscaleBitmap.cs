@@ -112,7 +112,7 @@ namespace CTSliceReconstruction
                     return 0.0;
                 }
 
-                return data[j * (Width) + i];
+                return data[i * (Width) + j];
             }
 
             set
@@ -128,7 +128,7 @@ namespace CTSliceReconstruction
                     return;
                 }
 
-                data[j * (Width) + i] = value;
+                data[i * (Width) + j] = value;
             }
         }
 
@@ -171,7 +171,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    bytes[j * data.Stride + i] = (byte)(this[i, j] * 255.0);
+                    bytes[i * data.Stride + j] = (byte)(this[i, j] * 255.0);
                 }
             }
 
@@ -207,6 +207,38 @@ namespace CTSliceReconstruction
             }
 
             return result;
+        }
+
+        public static GrayscaleBitmap Sinogram(List<double[]> projections)
+        {
+            int projectionCount = projections.Count;
+
+            int projectionSize = projections[0].Length;
+
+            GrayscaleBitmap sinogram = new GrayscaleBitmap(projectionSize, 3 * projectionCount);
+
+            bool reversed = true;
+
+            for (int k = 0; k < 3; k++) { 
+                for (int i = 0; i < projectionCount; i++)
+                {
+                    for (int j = 0; j < projectionSize; j++)
+                    {
+                        int xIndex = j;
+
+                        if (reversed)
+                        {
+                            xIndex = projectionSize - 1 - j;
+                        }
+
+                        sinogram[k * projectionCount + i, xIndex] = projections[i][j];
+                    }
+                }
+
+                reversed ^= true;
+            }
+
+            return sinogram;
         }
 
         /// <summary>
