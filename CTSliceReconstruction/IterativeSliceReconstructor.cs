@@ -61,6 +61,16 @@ namespace CTSliceReconstruction
                 Console.WriteLine("Iteration: " + i);
                 performOneIteration(i % projections.Count, bmp);
             }
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    if (bmp[i, j] < 0)
+                        bmp[i, j] = 0;
+                    if (bmp[i, j] > 1)
+                        bmp[i, j] = 1;
+                }
+            }
             return bmp;
         }
     }

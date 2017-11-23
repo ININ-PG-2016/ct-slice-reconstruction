@@ -58,17 +58,19 @@ namespace ConsoleApp
                 }
             }
             bmp.SaveToFile("paraboloid.bmp");*/
-            //Console.WriteLine("Generating projections");
-            //double angle = 0.5;
-            //List<double[]> projections = new ProjectionHandlerBresenham().GenerateProjections(bmp, (int)(180.0 / angle));
+            GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+            Console.WriteLine("Generating projections");
+            double angle = 1;
+            List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
 
-            ////Filter1D.GetLaplaceFilter().Apply(projections);
+            //Filter1D.GetLaplaceFilter().Apply(projections);
+
             //GrayscaleBitmap sinogram = GrayscaleBitmap.Sinogram(projections);
             //sinogram.Stretch();
             //sinogram.SaveToFile("sinogram.bmp");
 
-            List<double[]> projections = SinogramHandler.SinogramToProjections(new GrayscaleBitmap(inputFilename));
-            double angle = 180.0 / projections.Count;
+            //List<double[]> projections = SinogramHandler.SinogramToProjections(new GrayscaleBitmap(inputFilename));
+            //double angle = 180.0 / projections.Count;
 
             //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
             IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
@@ -76,20 +78,16 @@ namespace ConsoleApp
             Console.WriteLine("Reconstructing");
             GrayscaleBitmap result = reconstructor.Reconstruct(540);
             //GrayscaleBitmap result = reconstructor.Reconstruct();
-            //GrayscaleBitmap error = new GrayscaleBitmap(result.Width, result.Height);
-            //for (int i = 0; i < result.Width; i++)
-            //{
-            //    for (int j = 0; j < result.Height; j++)
-            //    {
-            //        if (result[i, j] < 0)
-            //            result[i, j] = 0;
-            //        if (result[i, j] > 1)
-            //            result[i, j] = 1;
-            //        error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
-            //    }
-            //}
+            GrayscaleBitmap error = new GrayscaleBitmap(result.Width, result.Height);
+            for (int i = 0; i < result.Width; i++)
+            {
+                for (int j = 0; j < result.Height; j++)
+                {
+                    error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
+                }
+            }
             result.SaveToFile(outputFilename);
-            //error.SaveToFile(outputFilename + ".error.bmp");
+            error.SaveToFile(outputFilename + ".error.bmp");
 
             /*ProjectionHandlerBresenham handler = new ProjectionHandlerBresenham();
             handler.generateLine(0.0, 25, 0);
