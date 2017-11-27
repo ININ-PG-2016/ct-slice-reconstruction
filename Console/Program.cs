@@ -9,11 +9,11 @@ namespace ConsoleApp
 
         static void Main(string[] args)
         {
-            if (args.Length >= 1 && args[0].Equals("-s"))
-            {
-                GenerateSinogram(args);
-                return;
-            }
+            //if (args.Length >= 1 && args[0].Equals("-s"))
+            //{
+            //    GenerateSinogram(args);
+            //    return;
+            //}
 
             /*GrayscaleBitmap bmp = new GrayscaleBitmap(1024,1024);
 
@@ -39,7 +39,7 @@ namespace ConsoleApp
             GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
             projectedBmp.SaveToFile("projected.bmp");*/
 
-            String inputFilename = args.Length >= 1 ? args[0] : "sinogram.bmp";
+            String inputFilename = args.Length >= 1 ? args[0] : "astronauts.png";
             String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
             /*GrayscaleBitmap bmp = new GrayscaleBitmap(500, 500);
             double begin = -bmp.Width / 2.0;
@@ -63,6 +63,36 @@ namespace ConsoleApp
             double angle = 1;
             List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
 
+            //NoiseMaker.AddNoise(projections, 0.5);
+
+            GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+
+            //GrayscaleBitmap laplaceSinogram = SinogramHandler.ProjectionsToSinogram(projections);
+
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    Filter2D.GetLaplace().Apply(laplaceSinogram);
+
+            //    sinogram += laplaceSinogram;
+            //}
+
+
+            sinogram.SaveToFile("sinogram_astronauts.bmp");
+
+            //Filter1D.GetHammingFilter3().Apply(projections);
+
+            //sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+
+            Filter2D.GetGauss55().Apply(sinogram);
+            ////Filter2D.GetGauss55().Apply(sinogram);
+            ////Filter2D.GetGauss55().Apply(sinogram);
+
+            //sinogram.SaveToFile("sinogram_after.bmp");
+
+            projections = SinogramHandler.SinogramToProjections(sinogram);
+
+            //Filter1D.GetLaplaceFilter().Apply(projections);
+            //Filter1D.GetLaplaceFilter().Apply(projections);
             //Filter1D.GetLaplaceFilter().Apply(projections);
 
             //GrayscaleBitmap sinogram = GrayscaleBitmap.Sinogram(projections);
@@ -74,10 +104,13 @@ namespace ConsoleApp
 
             //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
             IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
-            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerBresenham());
+            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
             Console.WriteLine("Reconstructing");
             GrayscaleBitmap result = reconstructor.Reconstruct(540);
             //GrayscaleBitmap result = reconstructor.Reconstruct();
+
+            //result.Stretch();
+
             GrayscaleBitmap error = new GrayscaleBitmap(result.Width, result.Height);
             for (int i = 0; i < result.Width; i++)
             {
@@ -86,6 +119,7 @@ namespace ConsoleApp
                     error[i, j] = Math.Abs(result[i, j] - bmp[i, j]);
                 }
             }
+
             result.SaveToFile(outputFilename);
             error.SaveToFile(outputFilename + ".error.bmp");
 
@@ -95,21 +129,21 @@ namespace ConsoleApp
             handler.generateLine(45, 25, 12);*/
         }
 
-        public static void GenerateSinogram(string[] args)
-        {
-            String inputFilename = args.Length >= 2 ? args[1] : "Shapes.bmp";
-            String outputFilename = args.Length >= 3 ? args[2] : "sinogram.bmp";
-            GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+        //public static void GenerateSinogram(string[] args)
+        //{
+        //    String inputFilename = args.Length >= 2 ? args[1] : "Shapes.bmp";
+        //    String outputFilename = args.Length >= 3 ? args[2] : "sinogram.bmp";
+        //    GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
 
-            Console.WriteLine("Generating projections");
-            double angle = 0.5;
-            List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
+        //    Console.WriteLine("Generating projections");
+        //    double angle = 0.5;
+        //    List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
 
-            //Filter1D.GetLaplaceFilter().Apply(projections);
-            Console.WriteLine("Saving sinogram");
-            GrayscaleBitmap sinogram = GrayscaleBitmap.Sinogram(projections);
-            sinogram.Stretch();
-            sinogram.SaveToFile(outputFilename);
-        }
+        //    //Filter1D.GetLaplaceFilter().Apply(projections);
+        //    Console.WriteLine("Saving sinogram");
+        //    GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+        //    //sinogram.Stretch();
+        //    sinogram.SaveToFile(outputFilename);
+        //}
     }
 }

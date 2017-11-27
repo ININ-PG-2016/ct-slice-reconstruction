@@ -101,15 +101,24 @@ namespace CTSliceReconstruction
         {
             get
             {
-                //if acessing out of bounds, return zero
-                if (i < 0 || i >= Height)
+                if (i < 0)
                 {
-                    return 0.0;
+                    return this[0, j];
                 }
 
-                if (j < 0 || j >= Width)
+                if (i >= Height)
                 {
-                    return 0.0;
+                    return this[Height - 1, j];
+                }
+
+                if (j < 0)
+                {
+                    return this[i, 0];
+                }
+
+                if (j >= Width)
+                {
+                    return this[i, Width - 1];
                 }
 
                 return data[i * (Width) + j];
@@ -155,6 +164,23 @@ namespace CTSliceReconstruction
             }
         }
 
+        private double getValueAcceptableForSystemBitmap(int i, int j)
+        {
+            double value = this[i, j];
+
+            if (value < 0.0)
+            {
+                return 0.0;
+            }
+
+            if (value > 1.0)
+            {
+                return 1.0;
+            }
+
+            return value;
+        }
+
         /// <summary>
         /// Create the system representation of bitmap
         /// </summary>
@@ -164,6 +190,26 @@ namespace CTSliceReconstruction
 
             BitmapData data = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
 
+            double max = Double.MinValue;
+            double min = Double.MaxValue;
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    if (this[i, j] < min)
+                    {
+                        min = this[i, j];
+                    }
+
+                    if (this[i, j] > max)
+                    {
+                        max = this[i, j];
+                    }
+                }
+            }
+
+
             // Copy the bytes from the image into a byte array
             byte[] bytes = new byte[data.Height * data.Stride];
 
@@ -171,7 +217,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    bytes[i * data.Stride + j] = (byte)(this[i, j] * 255.0);
+                    bytes[i * data.Stride + j] = (byte)((this[i, j] - min) / (max - min) * 255.0);
                 }
             }
 
@@ -207,38 +253,6 @@ namespace CTSliceReconstruction
             }
 
             return result;
-        }
-
-        public static GrayscaleBitmap Sinogram(List<double[]> projections)
-        {
-            int projectionCount = projections.Count;
-
-            int projectionSize = projections[0].Length;
-
-            GrayscaleBitmap sinogram = new GrayscaleBitmap(projectionSize, 3 * projectionCount);
-
-            bool reversed = true;
-
-            for (int k = 0; k < 3; k++) { 
-                for (int i = 0; i < projectionCount; i++)
-                {
-                    for (int j = 0; j < projectionSize; j++)
-                    {
-                        int xIndex = j;
-
-                        if (reversed)
-                        {
-                            xIndex = projectionSize - 1 - j;
-                        }
-
-                        sinogram[k * projectionCount + i, xIndex] = projections[i][j];
-                    }
-                }
-
-                reversed ^= true;
-            }
-
-            return sinogram;
         }
 
         /// <summary>

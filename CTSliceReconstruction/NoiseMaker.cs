@@ -20,5 +20,17 @@ namespace CTSliceReconstruction
                 }
             }
         }
+
+        public static void AddNoise(GrayscaleBitmap bmp, double noiseMagnitude)
+        {
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    double noise = (rnd.NextDouble() - 0.5) * 2 * noiseMagnitude;
+                    bmp[i, j] *= (1 + noise);
+                }
+            }
+        }
     }
 }
