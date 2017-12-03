@@ -298,5 +298,41 @@ namespace CTSliceReconstruction
                 }
             }
         }
+
+        public GrayscaleBitmap CreateSquareBitmap()
+        {
+            GrayscaleBitmap squareBmp = new GrayscaleBitmap(Math.Max(Width, Height), Math.Max(Width, Height));
+            if (Width >= Height)
+            {
+                int margin = (squareBmp.Height - Height) / 2;
+                for (int i = 0; i < squareBmp.Width; i++)
+                {
+                    for (int j = 0; j < squareBmp.Height; j++)
+                    {
+                        int index = j - margin;
+                        if (index < 0 || index >= Height)
+                            squareBmp[j, i] = 0;
+                        else
+                            squareBmp[j, i] = this[index, i];
+                    }
+                }
+            }
+            else
+            {
+                int margin = (squareBmp.Width - Width) / 2;
+                for (int i = 0; i < squareBmp.Width; i++)
+                {
+                    for (int j = 0; j < squareBmp.Height; j++)
+                    {
+                        int index = i - margin;
+                        if (index < 0 || index >= Width)
+                            squareBmp[j, i] = 0;
+                        else
+                            squareBmp[j, i] = this[j, index];
+                    }
+                }
+            }
+            return squareBmp;
+        }
     }
 }

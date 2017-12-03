@@ -59,13 +59,14 @@ namespace ConsoleApp
             }
             bmp.SaveToFile("paraboloid.bmp");*/
             GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+            bmp = bmp.CreateSquareBitmap();
             Console.WriteLine("Generating projections");
             double angle = 1;
             List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
 
             //NoiseMaker.AddNoise(projections, 0.5);
 
-            GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+            //GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
             //GrayscaleBitmap laplaceSinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
@@ -77,19 +78,19 @@ namespace ConsoleApp
             //}
 
 
-            sinogram.SaveToFile("sinogram_astronauts.bmp");
+            //sinogram.SaveToFile("sinogram_astronauts.bmp");
 
             //Filter1D.GetHammingFilter3().Apply(projections);
 
             //sinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
-            Filter2D.GetGauss55().Apply(sinogram);
+            //Filter2D.GetGauss55().Apply(sinogram);
             ////Filter2D.GetGauss55().Apply(sinogram);
             ////Filter2D.GetGauss55().Apply(sinogram);
 
             //sinogram.SaveToFile("sinogram_after.bmp");
 
-            projections = SinogramHandler.SinogramToProjections(sinogram);
+            //projections = SinogramHandler.SinogramToProjections(sinogram);
 
             //Filter1D.GetLaplaceFilter().Apply(projections);
             //Filter1D.GetLaplaceFilter().Apply(projections);
@@ -106,7 +107,8 @@ namespace ConsoleApp
             IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
             //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
             Console.WriteLine("Reconstructing");
-            GrayscaleBitmap result = reconstructor.Reconstruct(540);
+            GrayscaleBitmap result = reconstructor.Reconstruct(500);
+            result = reconstructor.PerformAdditionalIterations(40);
             //GrayscaleBitmap result = reconstructor.Reconstruct();
 
             //result.Stretch();
