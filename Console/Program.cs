@@ -63,6 +63,7 @@ namespace ConsoleApp
             Console.WriteLine("Generating projections");
             double angle = 1;
             List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
+            Filter1D.GetLaplaceFilter().Apply(projections);
 
             //NoiseMaker.AddNoise(projections, 0.5);
 
