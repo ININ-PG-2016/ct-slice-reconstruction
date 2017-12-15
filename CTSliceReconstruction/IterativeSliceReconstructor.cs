@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public class IterativeSliceReconstructor
+    public class IterativeSliceReconstructor : SliceReconstructor
     {
-        private List<double[]> projections;
-        private double angleBetweenProjections;
-        private ProjectionHandler projectionHandler;
         private bool allowNegativeValues;
 
         public IterativeSliceReconstructor(List<double[]> projections, double angleBetweenProjections, ProjectionHandler projectionHandler, bool allowNegativeValues = true)

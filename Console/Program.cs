@@ -39,7 +39,7 @@ namespace ConsoleApp
             GrayscaleBitmap projectedBmp = projectionHandler.ExtrudeProjection(projection, angle);
             projectedBmp.SaveToFile("projected.bmp");*/
 
-            String inputFilename = args.Length >= 1 ? args[0] : "astronauts.png";
+            String inputFilename = args.Length >= 1 ? args[0] : "Shapes.bmp";
             String outputFilename = args.Length >= 2 ? args[1] : "result.bmp";
             /*GrayscaleBitmap bmp = new GrayscaleBitmap(500, 500);
             double begin = -bmp.Width / 2.0;
@@ -67,7 +67,9 @@ namespace ConsoleApp
 
             GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
-            //GrayscaleBitmap laplaceSinogram = SinogramHandler.ProjectionsToSinogram(projections);
+            EdgeDetectorRoberts.Instance.Apply(sinogram);
+
+            //GrayscaleBitmap laplaceSinogram = sinogram.Copy();
 
             //for (int i = 0; i < 1; i++)
             //{
@@ -77,17 +79,17 @@ namespace ConsoleApp
             //}
 
 
-            sinogram.SaveToFile("sinogram_astronauts.bmp");
+            sinogram.SaveToFile("sinogram.bmp");
 
-            //Filter1D.GetHammingFilter3().Apply(projections);
+            ////Filter1D.GetHammingFilter3().Apply(projections);
 
-            //sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+            ////sinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
-            Filter2D.GetGauss55().Apply(sinogram);
-            ////Filter2D.GetGauss55().Apply(sinogram);
-            ////Filter2D.GetGauss55().Apply(sinogram);
+            //Filter2D.GetGauss55().Apply(sinogram);
+            //////Filter2D.GetGauss55().Apply(sinogram);
+            //////Filter2D.GetGauss55().Apply(sinogram);
 
-            //sinogram.SaveToFile("sinogram_after.bmp");
+            ////sinogram.SaveToFile("sinogram_after.bmp");
 
             projections = SinogramHandler.SinogramToProjections(sinogram);
 
@@ -103,11 +105,23 @@ namespace ConsoleApp
             //double angle = 180.0 / projections.Count;
 
             //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
-            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
-            //BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
+            //IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
+            BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
             Console.WriteLine("Reconstructing");
-            GrayscaleBitmap result = reconstructor.Reconstruct(540);
-            //GrayscaleBitmap result = reconstructor.Reconstruct();
+            //GrayscaleBitmap result = reconstructor.Reconstruct(540);
+            GrayscaleBitmap result = reconstructor.Reconstruct();
+
+            //GrayscaleBitmap filteredResult = result.Copy();
+            //ConvolutionFilter2D.GetLaplace().Apply(filteredResult);
+            //result += filteredResult;
+            //result += filteredResult;
+            //result += filteredResult;
+
+            //result.Stretch();
+
+            
+
+            
 
             //result.Stretch();
 

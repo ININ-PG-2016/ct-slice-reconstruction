@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public class BackProjectionSliceReconstructor
+    public class BackProjectionSliceReconstructor : SliceReconstructor
     {
-        private List<double[]> projections;
-        private double angleBetweenProjections;
-        private ProjectionHandler projectionHandler;
+        
 
         public BackProjectionSliceReconstructor(List<double[]> projections, double angleBetweenProjections, ProjectionHandler projectionHandler)
         {

@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public class Filter2D
+    public interface Filter2D
+    {
+        void Apply(GrayscaleBitmap bmp);
+    }
+
+    public class ConvolutionFilter2D : Filter2D
     {
         private double[,] filterValues;
         int originI;
         int originJ;
 
-        public Filter2D(double[,] filterValues, int originI, int originJ)
+        public ConvolutionFilter2D(double[,] filterValues, int originI, int originJ)
         {
             this.filterValues = filterValues;
             this.originI = originI;
@@ -57,9 +62,9 @@ namespace CTSliceReconstruction
             }
         }
 
-        public static Filter2D GetGauss55()
+        public static ConvolutionFilter2D GetGauss55()
         {
-            return new Filter2D
+            return new ConvolutionFilter2D
                 (
                     new double[,] 
                     { 
@@ -73,9 +78,9 @@ namespace CTSliceReconstruction
                 );
         }
 
-        public static Filter2D GetLaplace()
+        public static ConvolutionFilter2D GetLaplace()
         {
-            return new Filter2D
+            return new ConvolutionFilter2D
                 (
                     new double[,]
                     {
@@ -85,6 +90,53 @@ namespace CTSliceReconstruction
                     },
                     1, 1
                 );
+        }
+
+        public static ConvolutionFilter2D GetRoberts1()
+        {
+            return new ConvolutionFilter2D(
+                    new double[,] { { 1.0, 0.0 }, { 0.0, -1.0 } },
+                    0,0
+                );
+        }
+
+        public static ConvolutionFilter2D GetRoberts2()
+        {
+            return new ConvolutionFilter2D(
+                    new double[,] { { 0.0, 1.0 }, { -1.0, -0.0 } },
+                    0, 0
+                );
+        }
+    }
+
+    public class EdgeDetectorRoberts : Filter2D
+    {
+        private static EdgeDetectorRoberts INSTANCE = new EdgeDetectorRoberts();
+
+        public static EdgeDetectorRoberts Instance {
+            get { return INSTANCE; }
+        }
+
+        private EdgeDetectorRoberts() { }
+
+        private Filter2D roberts1 = ConvolutionFilter2D.GetRoberts1();
+        private Filter2D roberts2 = ConvolutionFilter2D.GetRoberts2();
+
+        public void Apply(GrayscaleBitmap bmp)
+        {
+            GrayscaleBitmap robertsBmp1 = bmp.Copy();
+            GrayscaleBitmap robertsBmp2 = bmp.Copy();
+
+            roberts1.Apply(robertsBmp1);
+            roberts2.Apply(robertsBmp2);
+
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    bmp[i, j] = Math.Abs(robertsBmp1[i, j]) + Math.Abs(robertsBmp2[i, j]);
+                }
+            }
         }
     }
 }

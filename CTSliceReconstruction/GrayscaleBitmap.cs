@@ -217,7 +217,8 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    bytes[i * data.Stride + j] = (byte)((this[i, j] - min) / (max - min) * 255.0);
+                    //bytes[i * data.Stride + j] = (byte)((this[i, j] - min) / (max - min) * 255.0);
+                    bytes[i * data.Stride + j] = (byte)(this[i, j] * 255);
                 }
             }
 
@@ -297,6 +298,21 @@ namespace CTSliceReconstruction
                     this[i, j] = (this[i, j] - min) / (max - min);
                 }
             }
+        }
+
+        public GrayscaleBitmap Copy()
+        {
+            GrayscaleBitmap bmp = new GrayscaleBitmap(Width, Height);
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    bmp[i, j] = this[i, j];
+                }
+            }
+
+            return bmp;
         }
     }
 }
