@@ -9,6 +9,8 @@ namespace CTSliceReconstruction
     public class IterativeSliceReconstructor : SliceReconstructor
     {
         private bool allowNegativeValues;
+        private GrayscaleBitmap currentReconstruction = null;
+        private int lastIterationNumber = 0;
 
         public IterativeSliceReconstructor(List<double[]> projections, double angleBetweenProjections, ProjectionHandler projectionHandler, bool allowNegativeValues = true)
         {
@@ -57,18 +59,49 @@ namespace CTSliceReconstruction
             {
                 Console.WriteLine("Iteration: " + i);
                 performOneIteration(i % projections.Count, bmp);
+                lastIterationNumber = i;
             }
+            GrayscaleBitmap ret = new GrayscaleBitmap(bmp.Width, bmp.Height);
             for (int i = 0; i < bmp.Width; i++)
             {
                 for (int j = 0; j < bmp.Height; j++)
                 {
                     if (bmp[i, j] < 0)
-                        bmp[i, j] = 0;
-                    if (bmp[i, j] > 1)
-                        bmp[i, j] = 1;
+                        ret[i, j] = 0;
+                    else if (bmp[i, j] > 1)
+                        ret[i, j] = 1;
+                    else
+                        ret[i, j] = bmp[i, j];
                 }
             }
-            return bmp;
+            currentReconstruction = bmp;
+            return ret;
+        }
+
+        public GrayscaleBitmap PerformAdditionalIterations(int iterationCount)
+        {
+            if (currentReconstruction == null)
+                throw new NullReferenceException("The Reconstruct method must be called first");
+            for (int i = 0; i < iterationCount; i++)
+            {
+                lastIterationNumber++;
+                Console.WriteLine("Iteration: " + lastIterationNumber);
+                performOneIteration(lastIterationNumber % projections.Count, currentReconstruction);
+            }
+            GrayscaleBitmap ret = new GrayscaleBitmap(currentReconstruction.Width, currentReconstruction.Height);
+            for (int i = 0; i < currentReconstruction.Width; i++)
+            {
+                for (int j = 0; j < currentReconstruction.Height; j++)
+                {
+                    if (currentReconstruction[i, j] < 0)
+                        ret[i, j] = 0;
+                    else if (currentReconstruction[i, j] > 1)
+                        ret[i, j] = 1;
+                    else
+                        ret[i, j] = currentReconstruction[i, j];
+                }
+            }
+            return ret;
         }
     }
 }

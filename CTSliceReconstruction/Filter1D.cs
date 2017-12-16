@@ -10,11 +10,13 @@ namespace CTSliceReconstruction
     {
         private double[] filterValues;
         int originIndex;
+        bool addToOriginalValue;
 
-        public Filter1D(double[] filterValues, int originIndex)
+        public Filter1D(double[] filterValues, int originIndex, bool addToOriginalValue = false)
         {
             this.originIndex = originIndex;
             this.filterValues = filterValues;
+            this.addToOriginalValue = addToOriginalValue;
         }
 
         private double applyToIndex(double[] values, int index)
@@ -26,6 +28,8 @@ namespace CTSliceReconstruction
                 if (arrayIndex >= 0 && arrayIndex < values.Length)
                     sum += (filterValues[i] * values[arrayIndex]);
             }
+            if (addToOriginalValue)
+                return values[index] + sum;
             return sum;
         }
 
@@ -46,7 +50,7 @@ namespace CTSliceReconstruction
 
         public static Filter1D GetLaplaceFilter()
         {
-            return new Filter1D(new double[] { -1, 2, -1 }, 1);
+            return new Filter1D(new double[] { -1, 2, -1 }, 1, true);
         }
 
         public static Filter1D GetHammingFilter1()

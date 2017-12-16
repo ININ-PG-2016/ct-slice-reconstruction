@@ -217,8 +217,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    //bytes[i * data.Stride + j] = (byte)((this[i, j] - min) / (max - min) * 255.0);
-                    bytes[i * data.Stride + j] = (byte)(this[i, j] * 255);
+                    bytes[i * data.Stride + j] = (byte)((this[i, j] - min) / (max - min) * 255.0);
                 }
             }
 
@@ -300,19 +299,40 @@ namespace CTSliceReconstruction
             }
         }
 
-        public GrayscaleBitmap Copy()
+        public GrayscaleBitmap CreateSquareBitmap()
         {
-            GrayscaleBitmap bmp = new GrayscaleBitmap(Width, Height);
-
-            for (int i = 0; i < Height; i++)
+            GrayscaleBitmap squareBmp = new GrayscaleBitmap(Math.Max(Width, Height), Math.Max(Width, Height));
+            if (Width >= Height)
             {
-                for (int j = 0; j < Width; j++)
+                int margin = (squareBmp.Height - Height) / 2;
+                for (int i = 0; i < squareBmp.Width; i++)
                 {
-                    bmp[i, j] = this[i, j];
+                    for (int j = 0; j < squareBmp.Height; j++)
+                    {
+                        int index = j - margin;
+                        if (index < 0 || index >= Height)
+                            squareBmp[j, i] = 0;
+                        else
+                            squareBmp[j, i] = this[index, i];
+                    }
                 }
             }
-
-            return bmp;
+            else
+            {
+                int margin = (squareBmp.Width - Width) / 2;
+                for (int i = 0; i < squareBmp.Width; i++)
+                {
+                    for (int j = 0; j < squareBmp.Height; j++)
+                    {
+                        int index = i - margin;
+                        if (index < 0 || index >= Width)
+                            squareBmp[j, i] = 0;
+                        else
+                            squareBmp[j, i] = this[j, index];
+                    }
+                }
+            }
+            return squareBmp;
         }
     }
 }
