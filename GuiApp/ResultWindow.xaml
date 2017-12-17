@@ -8,8 +8,8 @@
         mc:Ignorable="d"
         Title="ResultWindow" Height="606" Width="820">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="500" Margin="302,10,0,0" VerticalAlignment="Top" Width="500"/>
-        <Image HorizontalAlignment="Left" Height="500" Margin="10,10,0,0" VerticalAlignment="Top" Width="278"/>
+        <Image HorizontalAlignment="Left" Height="500" Margin="302,10,0,0" Name="resultImg" VerticalAlignment="Top" Width="500"/>
+        <Image HorizontalAlignment="Left" Height="500" Margin="10,10,0,0" Name="sinogramImg" VerticalAlignment="Top" Width="278"/>
         <Grid HorizontalAlignment="Left" Height="60" Margin="10,515,0,0" VerticalAlignment="Top" Width="792">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

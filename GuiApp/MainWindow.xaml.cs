@@ -32,6 +32,7 @@ namespace GuiApp
             reconstructionAlgorithm.Items.Add("Back projection");
             reconstructionAlgorithm.Items.Add("Iterative");
             reconstructionAlgorithm.SelectedIndex = 0;
+
             projectionFilter.Items.Add(Filter1D.GetGaussianFilter());
             projectionFilter.Items.Add(Filter1D.GetHammingFilter1());
             projectionFilter.Items.Add(Filter1D.GetHammingFilter2());
@@ -39,6 +40,12 @@ namespace GuiApp
             projectionFilter.Items.Add(Filter1D.GetLaplaceFilter());
             projectionFilter.Items.Add(Filter1D.GetNoiseFilter());
             projectionFilter.SelectedIndex = 0;
+
+            sinogramFilter.Items.Add(ConvolutionFilter2D.GetGauss55());
+            sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplace());
+            sinogramFilter.Items.Add(EdgeDetectorRoberts.Instance);
+            sinogramFilter.Items.Add(LaplacianSharpening.Instance);
+            sinogramFilter.SelectedIndex = 0;
         }
 
         private void setState(String state)
@@ -60,27 +67,48 @@ namespace GuiApp
             bmp = bmp.CreateSquareBitmap();
             setState("Generating projections");
             List<double[]> projections = ((ProjectionHandler)projectionAlgorithm.SelectedItem).GenerateProjections(bmp, (int)numberOfProjections.Value, progressCounter);
+
+            
+
             setState("Filtering projections");
             foreach (Filter1D filter in projectionFilterList.Items)
             {
                 filter.Apply(projections);
             }
+
+            GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+
+            setState("Filtering sinogram");
+
+            foreach (Filter2D filter in sinogramFilterList.Items)
+            {
+                filter.Apply(sinogram);
+            }
+
+            projections = SinogramHandler.SinogramToProjections(sinogram);
+
+            GrayscaleBitmap result;
+
             setState("Reconstructing");
             if ((String)reconstructionAlgorithm.SelectedItem == "Back projection")
             {
                 BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, 180.0 / (double)numberOfProjections.Value, (ProjectionHandler)projectionAlgorithm.SelectedItem);
-                GrayscaleBitmap result = reconstructor.Reconstruct(progressCounter);
-                result.SaveToFile("result.bmp");
-                setState("Nothing to do");
+                result = reconstructor.Reconstruct(progressCounter);
+                
             }
             else
             {
                 IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, 180.0 / (double)numberOfProjections.Value, (ProjectionHandler)projectionAlgorithm.SelectedItem, (bool)allowNegativeValuesCheckBox.IsChecked);
-                GrayscaleBitmap result = reconstructor.Reconstruct((int)numberOfIterations.Value, progressCounter);
-                result.SaveToFile("result.bmp");
-                setState("Nothing to do");
+                result = reconstructor.Reconstruct((int)numberOfIterations.Value, progressCounter);
+                
             }
+
+            setState("Nothing to do");
+
             progressCounter.Reset();
+
+            ResultWindow resultWnd = new ResultWindow(sinogram, result);
+            resultWnd.Show();
         }
 
         private void loadPictureBtn_Click(object sender, RoutedEventArgs e)
@@ -126,6 +154,17 @@ namespace GuiApp
         private void clearProjecitonFilterBtn_Click(object sender, RoutedEventArgs e)
         {
             projectionFilterList.Items.Clear();
+        }
+
+        private void addSinogramFilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Filter2D selectedFilter = (Filter2D)sinogramFilter.SelectedItem;
+            sinogramFilterList.Items.Add(selectedFilter);
+        }
+
+        private void clearSinogramFilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            sinogramFilterList.Items.Clear();
         }
     }
 }

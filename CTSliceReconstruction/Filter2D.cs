@@ -16,12 +16,14 @@ namespace CTSliceReconstruction
         private double[,] filterValues;
         int originI;
         int originJ;
+        string name;
 
-        public ConvolutionFilter2D(double[,] filterValues, int originI, int originJ)
+        public ConvolutionFilter2D(double[,] filterValues, int originI, int originJ, string name)
         {
             this.filterValues = filterValues;
             this.originI = originI;
             this.originJ = originJ;
+            this.name = name;
         }
         private double applyToPosition(GrayscaleBitmap bmp, int i, int j)
         {
@@ -62,6 +64,11 @@ namespace CTSliceReconstruction
             }
         }
 
+        public override string ToString()
+        {
+            return name;
+        }
+
         public static ConvolutionFilter2D GetGauss55()
         {
             return new ConvolutionFilter2D
@@ -74,7 +81,8 @@ namespace CTSliceReconstruction
                         { 0.0148, 0.0592, 0.0962, 0.0592, 0.0148 },
                         { 0.0037, 0.0148, 0.0259, 0.0148, 0.0037 }
                     },
-                    2,2
+                    2,2,
+                    "Gaussian (5x5)"
                 );
         }
 
@@ -88,7 +96,8 @@ namespace CTSliceReconstruction
                         { -1,  8, -1 },
                         { -1, -1, -1 }
                     },
-                    1, 1
+                    1, 1,
+                    "Laplacian"
                 );
         }
 
@@ -96,7 +105,8 @@ namespace CTSliceReconstruction
         {
             return new ConvolutionFilter2D(
                     new double[,] { { 1.0, 0.0 }, { 0.0, -1.0 } },
-                    0,0
+                    0,0,
+                    "Roberts 1"
                 );
         }
 
@@ -104,7 +114,8 @@ namespace CTSliceReconstruction
         {
             return new ConvolutionFilter2D(
                     new double[,] { { 0.0, 1.0 }, { -1.0, -0.0 } },
-                    0, 0
+                    0, 0,
+                    "Roberts 2"
                 );
         }
     }
@@ -136,6 +147,11 @@ namespace CTSliceReconstruction
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return "Laplacian Sharpening";
+        }
     }
 
     public class EdgeDetectorRoberts : Filter2D
@@ -166,6 +182,11 @@ namespace CTSliceReconstruction
                     bmp[i, j] = Math.Abs(robertsBmp1[i, j]) + Math.Abs(robertsBmp2[i, j]);
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return "Edge detection (Roberts)";
         }
     }
 }
