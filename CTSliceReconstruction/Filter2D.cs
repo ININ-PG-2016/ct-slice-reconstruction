@@ -109,6 +109,35 @@ namespace CTSliceReconstruction
         }
     }
 
+    public class LaplacianSharpening : Filter2D
+    {
+        private static LaplacianSharpening INSTANCE = new LaplacianSharpening();
+
+        public static LaplacianSharpening Instance
+        {
+            get { return INSTANCE; }
+        }
+
+        private LaplacianSharpening() { }
+
+        private Filter2D laplace = ConvolutionFilter2D.GetLaplace();
+
+        public void Apply(GrayscaleBitmap bmp)
+        {
+            GrayscaleBitmap laplaceBmp = bmp.Copy();
+
+            laplace.Apply(laplaceBmp);
+
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    bmp[i, j] += laplaceBmp[i, j];
+                }
+            }
+        }
+    }
+
     public class EdgeDetectorRoberts : Filter2D
     {
         private static EdgeDetectorRoberts INSTANCE = new EdgeDetectorRoberts();
