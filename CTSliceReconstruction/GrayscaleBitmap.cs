@@ -334,5 +334,20 @@ namespace CTSliceReconstruction
             }
             return squareBmp;
         }
+
+        public GrayscaleBitmap Copy()
+        {
+            GrayscaleBitmap bmp = new GrayscaleBitmap(Width, Height);
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    bmp[i, j] = this[i, j];
+                }
+            }
+
+            return bmp;
+        }
     }
 }

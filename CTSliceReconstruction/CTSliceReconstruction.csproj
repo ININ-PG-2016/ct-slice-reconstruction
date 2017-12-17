@@ -63,11 +63,13 @@
     <Compile Include="NoiseMaker.cs" />
     <Compile Include="PixelInfo.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="ProgressCounter.cs" />
     <Compile Include="ProjectionHandlerBresenham.cs" />
     <Compile Include="ProjectionHandlerRaycast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProjectionHandler.cs" />
     <Compile Include="SinogramHandler.cs" />
+    <Compile Include="SliceReconstructor.cs" />
     <Compile Include="Vector2D.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -6,14 +6,14 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="CT Slice Reconstruction" Height="546" Width="800">
+        Title="CT Slice Reconstruction" Height="552" Width="800">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="118"/>
-            <RowDefinition Height="46"/>
+            <RowDefinition Height="64"/>
             <RowDefinition />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="78" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="10,10,10,0">
             <Grid.RowDefinitions>
@@ -37,21 +37,15 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="36"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Name="inputPicture" IsEnabled="False" ></TextBox>
-                <Button Grid.Column="1" Margin="10,0,0,0" Height="26" VerticalAlignment="Center">...</Button>
+                <TextBox Grid.Column="0" Name="inputPicture" IsEnabled="False" TextChanged="inputPicture_TextChanged" />
+                <Button x:Name="loadPictureBtn" Grid.Column="1" Margin="10,0,0,0" Height="26" VerticalAlignment="Bottom" Click="loadPictureBtn_Click">...</Button>
             </Grid>
 
             <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center">Projection Algorithm</Label>
-            <ComboBox Name="projectionAlgorithm" Grid.Column="1" Grid.Row="1" Height="26" VerticalAlignment="Center">
-                <ComboBoxItem IsSelected="True" >Raycasting</ComboBoxItem>
-                <ComboBoxItem>Bresenham</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Name="projectionAlgorithm" Grid.Column="1" Grid.Row="1" Height="26" VerticalAlignment="Center"/>
 
             <Label Grid.Column="0" Grid.Row="2" VerticalAlignment="Center">Reconstruction Algorithm</Label>
-            <ComboBox Name="reconstructionAlgorithm" Grid.Column="1" Grid.Row="2" Height="26" VerticalAlignment="Center">
-                <ComboBoxItem IsSelected="True" >Back projection</ComboBoxItem>
-                <ComboBoxItem>Iterative</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Name="reconstructionAlgorithm" Grid.Column="1" Grid.Row="2" Height="26" VerticalAlignment="Center" SelectionChanged="reconstructionAlgorithm_SelectionChanged"/>
 
 
 
@@ -68,13 +62,14 @@
                 <RowDefinition Height="36"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="0" VerticalAlignment="Center" Height="26" Margin="0,5">Number of Projections</Label>
-            <xctk:IntegerUpDown Grid.Column="1" Height="26" VerticalAlignment="Center" Minimum="1" Value="180" Margin="0,5"/>
+            <xctk:IntegerUpDown x:Name="numberOfProjections" Grid.Column="1" Height="26" VerticalAlignment="Center" Minimum="1" Value="180" Margin="0,5"/>
 
-            <Label Grid.Column="2" VerticalAlignment="Center" Margin="10,5,0,5" Height="26">Number of Iterations</Label>
-            <xctk:IntegerUpDown Grid.Column="3" Height="26" VerticalAlignment="Center" Minimum="1" Value="540" Margin="0,5"/>
+            <Label x:Name="numberOfIterationsLabel" Grid.Column="2" VerticalAlignment="Center" Margin="10,5,0,5" Height="26">Number of Iterations</Label>
+            <xctk:IntegerUpDown x:Name="numberOfIterations" Grid.Column="3" Height="26" VerticalAlignment="Center" Minimum="1" Value="540" Margin="0,5"/>
+            <CheckBox x:Name="allowNegativeValuesCheckBox" Content="Allow negative values between iterations" Grid.Column="2" HorizontalAlignment="Left" Height="17" Margin="130,37,0,-17" VerticalAlignment="Top" Width="251" Grid.ColumnSpan="2" RenderTransformOrigin="0.673,0.765" FlowDirection="RightToLeft"/>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="10,0,10,0" VerticalAlignment="Top">
+        <Grid Grid.Row="2" Margin="10,0,10,0" VerticalAlignment="Top" Height="246">
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -110,7 +105,7 @@
 
                     <Button Grid.Row="0" Grid.Column="1" Name="addProjecitonFilterBtn" Content="Add" Width="70" Height="26"/>
 
-                    <ListBox Grid.Row="1" Height="210">
+                    <ListBox Grid.Row="1" Height="164" VerticalAlignment="Top">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ListBoxItem}">
                                 <Setter Property="Focusable" Value="False"/>
@@ -150,7 +145,7 @@
 
                     <Button Grid.Row="0" Grid.Column="1" Name="addSinogramFilterBtn" Content="Add" Width="70" Height="26"/>
 
-                    <ListBox Grid.Row="1" Height="210">
+                    <ListBox Grid.Row="1" Height="164" VerticalAlignment="Top">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ListBoxItem}">
                                 <Setter Property="Focusable" Value="False"/>
@@ -167,6 +162,18 @@
             </Grid>
         </Grid>
 
-        <Button Grid.Row="3" Name="runBtn" Content="Run" Width="100" Height="20"  IsEnabled="False"/>
+        <Button Grid.Row="3" Name="runBtn" Content="Run"  IsEnabled="False" Click="runBtn_Click" RenderTransformOrigin="0.505,-0.225" Margin="346,10,346,38" MaxWidth="200" MinWidth="50"/>
+        <Label x:Name="label" Content="State:" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Top" Height="30" Width="39"/>
+        <Label x:Name="stateLabel" Content="Nothing to do" HorizontalAlignment="Left" Margin="49,10,0,0" Grid.Row="3" VerticalAlignment="Top" Height="30" RenderTransformOrigin="-0.171,0.66" Width="202"/>
+        <ProgressBar x:Name="progressBar" Margin="8,50,8,6" Grid.Row="3" RenderTransformOrigin="0.5,0.5">
+            <ProgressBar.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ProgressBar.RenderTransform>
+        </ProgressBar>
     </Grid>
 </Window>

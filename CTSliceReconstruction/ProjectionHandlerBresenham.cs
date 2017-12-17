@@ -172,5 +172,10 @@ namespace CTSliceReconstruction
 
             return result;
         }
+
+        public override string ToString()
+        {
+            return "Bresenham";
+        }
     }
 }

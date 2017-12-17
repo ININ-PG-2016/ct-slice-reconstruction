@@ -17,7 +17,7 @@ namespace CTSliceReconstruction
             this.projectionHandler = projectionHandler;
         }
 
-        public GrayscaleBitmap Reconstruct()
+        public GrayscaleBitmap Reconstruct(ProgressCounter progressCounter = null)
         {
             int size = projections[0].Length;
             GrayscaleBitmap bmp = new GrayscaleBitmap(size, size);
@@ -30,6 +30,7 @@ namespace CTSliceReconstruction
                 GrayscaleBitmap extrudedProjection = projectionHandler.ExtrudeProjection(projections[i], angle);
 
                 bmp += extrudedProjection;
+                progressCounter?.AddStep();
             }
 
             bmp.Stretch();

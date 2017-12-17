@@ -59,15 +59,16 @@ namespace ConsoleApp
             }
             bmp.SaveToFile("paraboloid.bmp");*/
             GrayscaleBitmap bmp = new GrayscaleBitmap(inputFilename);
+            bmp = bmp.CreateSquareBitmap();
             Console.WriteLine("Generating projections");
             double angle = 1;
             List<double[]> projections = new ProjectionHandlerRaycast().GenerateProjections(bmp, (int)(180.0 / angle));
 
             //NoiseMaker.AddNoise(projections, 0.5);
 
-            GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
+            //GrayscaleBitmap sinogram = SinogramHandler.ProjectionsToSinogram(projections);
 
-            EdgeDetectorRoberts.Instance.Apply(sinogram);
+            //EdgeDetectorRoberts.Instance.Apply(sinogram);
 
             //GrayscaleBitmap laplaceSinogram = sinogram.Copy();
 
@@ -79,7 +80,7 @@ namespace ConsoleApp
             //}
 
 
-            sinogram.SaveToFile("sinogram.bmp");
+            //sinogram.SaveToFile("sinogram.bmp");
 
             ////Filter1D.GetHammingFilter3().Apply(projections);
 
@@ -91,7 +92,7 @@ namespace ConsoleApp
 
             ////sinogram.SaveToFile("sinogram_after.bmp");
 
-            projections = SinogramHandler.SinogramToProjections(sinogram);
+            //projections = SinogramHandler.SinogramToProjections(sinogram);
 
             //Filter1D.GetLaplaceFilter().Apply(projections);
             //Filter1D.GetLaplaceFilter().Apply(projections);
@@ -105,11 +106,11 @@ namespace ConsoleApp
             //double angle = 180.0 / projections.Count;
 
             //List<double[]> projections = new AnalyticParaboloidProjector().GenerateProjections(500, (int)(180.0 / angle));
-            //IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
-            BackProjectionSliceReconstructor reconstructor = new BackProjectionSliceReconstructor(projections, angle, new ProjectionHandlerRaycast());
+            IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
+            //BackProjectionSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, angle, new ProjectionHandlerRaycast(), false);
             Console.WriteLine("Reconstructing");
-            //GrayscaleBitmap result = reconstructor.Reconstruct(540);
-            GrayscaleBitmap result = reconstructor.Reconstruct();
+            GrayscaleBitmap result = reconstructor.Reconstruct(540);
+            //GrayscaleBitmap result = reconstructor.Reconstruct();
 
             //GrayscaleBitmap filteredResult = result.Copy();
             //ConvolutionFilter2D.GetLaplace().Apply(filteredResult);

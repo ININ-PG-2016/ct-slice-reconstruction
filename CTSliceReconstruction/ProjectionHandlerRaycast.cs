@@ -61,5 +61,10 @@ namespace CTSliceReconstruction
             }
             return pixels;
         }
+
+        public override string ToString()
+        {
+            return "Raycasting";
+        }
     }
 }

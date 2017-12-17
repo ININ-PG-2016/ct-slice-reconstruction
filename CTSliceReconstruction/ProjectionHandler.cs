@@ -8,7 +8,7 @@ namespace CTSliceReconstruction
 {
     public abstract class ProjectionHandler
     {
-        public List<double[]> GenerateProjections(GrayscaleBitmap bmp, int sliceCount)
+        public List<double[]> GenerateProjections(GrayscaleBitmap bmp, int sliceCount, ProgressCounter progressCounter = null)
         {
             if (sliceCount < 1)
             {
@@ -24,6 +24,7 @@ namespace CTSliceReconstruction
                 double angle = i * angleStep;
 
                 projections.Add(CreateProjection(bmp, angle));
+                progressCounter?.AddStep();
             }
 
             return projections;

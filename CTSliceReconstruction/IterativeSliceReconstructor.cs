@@ -40,7 +40,7 @@ namespace CTSliceReconstruction
             }
         }
 
-        public GrayscaleBitmap Reconstruct(int iterationCount)
+        public GrayscaleBitmap Reconstruct(int iterationCount, ProgressCounter progressCounter = null)
         {
             int size = projections[0].Length;
             double avrg = 0;
@@ -60,6 +60,7 @@ namespace CTSliceReconstruction
                 Console.WriteLine("Iteration: " + i);
                 performOneIteration(i % projections.Count, bmp);
                 lastIterationNumber = i;
+                progressCounter?.AddStep();
             }
             GrayscaleBitmap ret = new GrayscaleBitmap(bmp.Width, bmp.Height);
             for (int i = 0; i < bmp.Width; i++)
