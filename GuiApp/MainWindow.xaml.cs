@@ -32,6 +32,13 @@ namespace GuiApp
             reconstructionAlgorithm.Items.Add("Back projection");
             reconstructionAlgorithm.Items.Add("Iterative");
             reconstructionAlgorithm.SelectedIndex = 0;
+            projectionFilter.Items.Add(Filter1D.GetGaussianFilter());
+            projectionFilter.Items.Add(Filter1D.GetHammingFilter1());
+            projectionFilter.Items.Add(Filter1D.GetHammingFilter2());
+            projectionFilter.Items.Add(Filter1D.GetHammingFilter3());
+            projectionFilter.Items.Add(Filter1D.GetLaplaceFilter());
+            projectionFilter.Items.Add(Filter1D.GetNoiseFilter());
+            projectionFilter.SelectedIndex = 0;
         }
 
         private void setState(String state)
@@ -53,6 +60,11 @@ namespace GuiApp
             bmp = bmp.CreateSquareBitmap();
             setState("Generating projections");
             List<double[]> projections = ((ProjectionHandler)projectionAlgorithm.SelectedItem).GenerateProjections(bmp, (int)numberOfProjections.Value, progressCounter);
+            setState("Filtering projections");
+            foreach (Filter1D filter in projectionFilterList.Items)
+            {
+                filter.Apply(projections);
+            }
             setState("Reconstructing");
             if ((String)reconstructionAlgorithm.SelectedItem == "Back projection")
             {
@@ -103,6 +115,17 @@ namespace GuiApp
                 runBtn.IsEnabled = false;
             else
                 runBtn.IsEnabled = true;
+        }
+
+        private void addProjecitonFilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Filter1D selectedFilter = (Filter1D)projectionFilter.SelectedItem;
+            projectionFilterList.Items.Add(selectedFilter);
+        }
+
+        private void clearProjecitonFilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            projectionFilterList.Items.Clear();
         }
     }
 }

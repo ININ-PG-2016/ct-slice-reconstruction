@@ -9,7 +9,7 @@ namespace CTSliceReconstruction
     public class NoiseMaker
     {
         static Random rnd = new Random();
-        public static void AddNoise(List<double[]> projections, double noiseMagnitude)
+        public static void AddMultiplicativeNoise(List<double[]> projections, double noiseMagnitude)
         {
             for (int i = 0; i < projections.Count; i++)
             {
@@ -21,7 +21,7 @@ namespace CTSliceReconstruction
             }
         }
 
-        public static void AddNoise(GrayscaleBitmap bmp, double noiseMagnitude)
+        public static void AddMultiplicativeNoise(GrayscaleBitmap bmp, double noiseMagnitude)
         {
             for (int i = 0; i < bmp.Height; i++)
             {
