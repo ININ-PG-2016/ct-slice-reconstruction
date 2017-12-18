@@ -38,7 +38,9 @@ namespace GuiApp
             projectionFilter.Items.Add(Filter1D.GetHammingFilter2());
             projectionFilter.Items.Add(Filter1D.GetHammingFilter3());
             projectionFilter.Items.Add(Filter1D.GetLaplaceFilter());
-            projectionFilter.Items.Add(Filter1D.GetNoiseFilter());
+            projectionFilter.Items.Add(Filter1D.GetLaplaceSharpeningFilter());
+            projectionFilter.Items.Add(Filter1D.GetMultiplicativeNoiseFilter());
+            projectionFilter.Items.Add(Filter1D.GetAdditiveNoiseFilter());
             projectionFilter.SelectedIndex = 0;
 
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetGauss55());

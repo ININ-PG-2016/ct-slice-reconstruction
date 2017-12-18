@@ -10,14 +10,12 @@ namespace CTSliceReconstruction
     {
         private double[] filterValues;
         private int originIndex;
-        private bool addToOriginalValue;
         private String name;
 
-        public Filter1D(double[] filterValues, int originIndex, String name, bool addToOriginalValue = false)
+        public Filter1D(double[] filterValues, int originIndex, String name)
         {
             this.originIndex = originIndex;
             this.filterValues = filterValues;
-            this.addToOriginalValue = addToOriginalValue;
             this.name = name;
         }
 
@@ -30,8 +28,6 @@ namespace CTSliceReconstruction
                 if (arrayIndex >= 0 && arrayIndex < values.Length)
                     sum += (filterValues[i] * values[arrayIndex]);
             }
-            if (addToOriginalValue)
-                return values[index] + sum;
             return sum;
         }
 
@@ -57,7 +53,12 @@ namespace CTSliceReconstruction
 
         public static Filter1D GetLaplaceFilter()
         {
-            return new Filter1D(new double[] { -1, 2, -1 }, 1, "Laplacian", true);
+            return new Filter1D(new double[] { -1, 2, -1 }, 1, "Laplacian");
+        }
+
+        public static Filter1D GetLaplaceSharpeningFilter()
+        {
+            return new Filter1D(new double[] { -1, 3, -1 }, 1, "Laplacian Sharpening");
         }
 
         public static Filter1D GetHammingFilter1()
@@ -83,15 +84,20 @@ namespace CTSliceReconstruction
             }, 2, "Gaussian (Length: 5)");
         }
 
-        public static Filter1D GetNoiseFilter()
+        public static Filter1D GetMultiplicativeNoiseFilter()
         {
             return new MultiplicativeNoiseFilter1D();
+        }
+
+        public static Filter1D GetAdditiveNoiseFilter()
+        {
+            return new AdditiveNoiseFilter1D();
         }
     }
 
     public class MultiplicativeNoiseFilter1D : Filter1D
     {
-        public MultiplicativeNoiseFilter1D() : base(null, 0, "", false)
+        public MultiplicativeNoiseFilter1D() : base(null, 0, "")
         {
         }
 
@@ -108,6 +114,28 @@ namespace CTSliceReconstruction
         public override string ToString()
         {
             return "Multiplicative noise (Magnitude: 0.1)";
+        }
+    }
+
+    public class AdditiveNoiseFilter1D : Filter1D
+    {
+        public AdditiveNoiseFilter1D() : base(null, 0, "")
+        {
+        }
+
+        public override void Apply(double[] values)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Apply(List<double[]> projections)
+        {
+            NoiseMaker.AddAdditiveNoise(projections, 0.1);
+        }
+
+        public override string ToString()
+        {
+            return "Additive noise (Magnitude: 0.1)";
         }
     }
 }
