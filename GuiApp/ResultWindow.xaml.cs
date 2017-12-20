@@ -1,4 +1,5 @@
 ﻿using CTSliceReconstruction;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -90,6 +91,17 @@ namespace GuiApp
         {
             ResultFilterWindow filtering = new ResultFilterWindow(this);
             filtering.Show();
+        }
+
+        private void saveResultBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Image files|*.bmp";
+            if (dialog.ShowDialog() == true)
+            {
+                string path = dialog.FileName;
+                result.SaveToFile(path);
+            }
         }
     }
 }

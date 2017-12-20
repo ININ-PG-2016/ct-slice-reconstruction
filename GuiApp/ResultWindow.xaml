@@ -29,7 +29,7 @@
 
 
             <Button Grid.Row="0" Grid.Column="1" Name="filterResultBtn" Click="filterResultBtn_Click" Content="Filter result" Width="100" Height="26"/>
-            <Button Grid.Row="0" Grid.Column="2" Name="saveResultBtn" Content="Save result" Width="100" Height="26"/>
+            <Button Grid.Row="0" Grid.Column="2" Name="saveResultBtn" Click="saveResultBtn_Click" Content="Save result" Width="100" Height="26"/>
         </Grid>
 
 
