@@ -21,6 +21,30 @@ namespace CTSliceReconstruction
             }
         }
 
+        public static void AddAdditiveNoise(List<double[]> projections, double noiseMagnitude)
+        {
+            double totalAvrg = 0;
+            for (int i = 0; i < projections.Count; i++)
+            {
+                double avrg = 0;
+                for (int j = 0; j < projections[i].Length; j++)
+                {
+                    avrg += projections[i][j];
+                }
+                avrg /= (double)projections[i].Length;
+                totalAvrg += avrg;
+            }
+            totalAvrg /= (double)projections.Count;
+            for (int i = 0; i < projections.Count; i++)
+            {
+                for (int j = 0; j < projections[i].Length; j++)
+                {
+                    double noise = (rnd.NextDouble() - 0.5) * 2 * noiseMagnitude * totalAvrg;
+                    projections[i][j] += noise;
+                }
+            }
+        }
+
         public static void AddMultiplicativeNoise(GrayscaleBitmap bmp, double noiseMagnitude)
         {
             for (int i = 0; i < bmp.Height; i++)

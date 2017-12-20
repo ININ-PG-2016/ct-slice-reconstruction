@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using CTSliceReconstruction;
 using System.Windows.Threading;
+using System.Drawing.Imaging;
 
 namespace GuiApp
 {
@@ -26,6 +27,7 @@ namespace GuiApp
         public MainWindow()
         {
             InitializeComponent();
+            this.Width = 800;
             projectionAlgorithm.Items.Add(new ProjectionHandlerRaycast());
             projectionAlgorithm.Items.Add(new ProjectionHandlerBresenham());
             projectionAlgorithm.SelectedIndex = 0;
@@ -38,7 +40,9 @@ namespace GuiApp
             projectionFilter.Items.Add(Filter1D.GetHammingFilter2());
             projectionFilter.Items.Add(Filter1D.GetHammingFilter3());
             projectionFilter.Items.Add(Filter1D.GetLaplaceFilter());
-            projectionFilter.Items.Add(Filter1D.GetNoiseFilter());
+            projectionFilter.Items.Add(Filter1D.GetLaplaceSharpeningFilter());
+            projectionFilter.Items.Add(Filter1D.GetMultiplicativeNoiseFilter());
+            projectionFilter.Items.Add(Filter1D.GetAdditiveNoiseFilter());
             projectionFilter.SelectedIndex = 0;
 
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetGauss55());
@@ -123,7 +127,27 @@ namespace GuiApp
             if (openDialog.ShowDialog() == true)
             {
                 inputPicture.Text = openDialog.FileName;
+                System.Drawing.Bitmap img = new GrayscaleBitmap(inputPicture.Text).CreateSquareBitmap().Bmp;
+                inputImage.Source = PrepareBitmap(img);
+                this.Width = 1220;
             }
+        }
+
+        private BitmapSource PrepareBitmap(System.Drawing.Bitmap bmp)
+        {
+            int width = bmp.Width;
+            int height = bmp.Height;
+
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, width, height);
+
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, bmp.PixelFormat);
+
+            IntPtr pointer = bmpData.Scan0;
+
+            BitmapSource source = BitmapSource.Create(width, height, 300, 300, PixelFormats.Gray8, null, pointer, height * bmpData.Stride, bmpData.Stride);
+
+            bmp.UnlockBits(bmpData);
+            return source;
         }
 
         private void reconstructionAlgorithm_SelectionChanged(object sender, SelectionChangedEventArgs e)
