@@ -258,39 +258,36 @@ namespace CTSliceReconstruction
         }
     }
 
-    //public class EdgeDetectorRoberts : Filter2D
-    //{
-    //    private static EdgeDetectorRoberts INSTANCE = new EdgeDetectorRoberts();
+    public class RemoveNegativeValuesFilter : Filter2D
+    {
+        public void Apply(GrayscaleBitmap bmp)
+        {
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    bmp[i, j] = (bmp[i, j] > 0) ? bmp[i, j] : 0;
+                }
+            }
+        }
 
-    //    public static EdgeDetectorRoberts Instance {
-    //        get { return INSTANCE; }
-    //    }
+        public override string ToString()
+        {
+            return "Negative value remover";
+        }
+    }
 
-    //    private EdgeDetectorRoberts() { }
+    public class AbsoluteValueFilter : Filter2D
+    {
+        public void Apply(GrayscaleBitmap bmp) {
+            for (int i = 0; i < bmp.Height; i++)
+            {
+                for (int j = 0; j < bmp.Width; j++)
+                {
+                    bmp[i, j] = Math.Abs(bmp[i,j]);
+                }
+            }
+        }
 
-    //    private Filter2D roberts1 = ConvolutionFilter2D.GetRoberts1();
-    //    private Filter2D roberts2 = ConvolutionFilter2D.GetRoberts2();
-
-    //    public void Apply(GrayscaleBitmap bmp)
-    //    {
-    //        GrayscaleBitmap robertsBmp1 = bmp.Copy();
-    //        GrayscaleBitmap robertsBmp2 = bmp.Copy();
-
-    //        roberts1.Apply(robertsBmp1);
-    //        roberts2.Apply(robertsBmp2);
-
-    //        for (int i = 0; i < bmp.Height; i++)
-    //        {
-    //            for (int j = 0; j < bmp.Width; j++)
-    //            {
-    //                bmp[i, j] = 0.5 * (Math.Abs(robertsBmp1[i, j]) + Math.Abs(robertsBmp2[i, j]));
-    //            }
-    //        }
-    //    }
-
-    //    public override string ToString()
-    //    {
-    //        return "Edge detection (Roberts)";
-    //    }
-    //}
+    }
 }

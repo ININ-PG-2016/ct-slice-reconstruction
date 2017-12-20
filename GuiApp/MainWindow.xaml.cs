@@ -53,6 +53,8 @@ namespace GuiApp
             //sinogramFilter.Items.Add(EdgeDetectorRoberts.Instance);
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getRoberts());
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getKirsch());
+            sinogramFilter.Items.Add(new RemoveNegativeValuesFilter());
+            sinogramFilter.Items.Add(new AbsoluteValueFilter());
             sinogramFilter.SelectedIndex = 0;
         }
 
