@@ -21,11 +21,28 @@ namespace GuiApp
     /// </summary>
     public partial class ResultWindow : Window
     {
-        public ResultWindow(GrayscaleBitmap sinogram, GrayscaleBitmap result)
+        private GrayscaleBitmap sinogram;
+        private GrayscaleBitmap result;
+        IterativeSliceReconstructor reconstructor;
+        public ResultWindow(GrayscaleBitmap sinogram, GrayscaleBitmap result, IterativeSliceReconstructor reconstructor)
         {
+            this.sinogram = sinogram;
+            this.result = result;
+            this.reconstructor = reconstructor;
             InitializeComponent();
             sinogramImg.Source = PrepareBitmap(sinogram.Bmp);
             resultImg.Source = PrepareBitmap(result.Bmp);
+
+            if (reconstructor != null)
+            {
+                moreIterationsBtn.Visibility = Visibility.Visible;
+                moreIterationsCount.Visibility = Visibility.Visible;
+                moreIterationsColumn.Width = new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                moreIterationsColumn.Width = new GridLength(0);
+            }
         }
 
         private BitmapSource PrepareBitmap(System.Drawing.Bitmap bmp)
@@ -43,6 +60,30 @@ namespace GuiApp
 
             bmp.UnlockBits(bmpData);
             return source;
+        }
+
+        private void moreIterationsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            result = reconstructor.PerformAdditionalIterations(moreIterationsCount.Value.GetValueOrDefault());
+            resultImg.Source = PrepareBitmap(result.Bmp);
+        }
+
+        public void ApplyFilters(ItemCollection selectedFilters)
+        {
+            foreach (Filter2D filter in selectedFilters)
+            {
+                filter.Apply(result);
+            }
+
+            result.InvalidateSystemBitmap();
+
+            resultImg.Source = PrepareBitmap(result.Bmp);
+        }
+
+        private void filterResultBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ResultFilterWindow filtering = new ResultFilterWindow(this);
+            filtering.Show();
         }
     }
 }

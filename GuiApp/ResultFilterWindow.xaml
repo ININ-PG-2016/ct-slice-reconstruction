@@ -1,0 +1,46 @@
+﻿<Window x:Class="GuiApp.ResultFilterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GuiApp"
+        mc:Ignorable="d"
+        Title="Result filtering" Height="270" Width="447.5">
+    <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center" Width="385" Margin="10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="165"/>
+            <RowDefinition Height="36"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" VerticalAlignment="Top" Grid.RowSpan="3" Margin="-15,0,-20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="114.803"/>
+                <RowDefinition Height="55.197"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Name="resultFilter" Grid.Column="0" Grid.Row="0" Height="26" VerticalAlignment="Center" Margin="0,5">
+            </ComboBox>
+
+            <Button Grid.Row="0" Grid.Column="1" Name="addResultFilterBtn" Click="addResultFilterBtn_Click" Content="Add" Width="70" Height="26" Margin="5"/>
+
+            <ListBox x:Name="resultFilterList" Grid.Row="1" Grid.IsSharedSizeScope="True" Height="160" VerticalAlignment="Top" Grid.RowSpan="2">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Focusable" Value="False"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+
+            <Button Grid.Row="1" Grid.Column="1" Name="clearResultFilterBtn" Click="clearResultFilterBtn_Click" Content="Clear" Width="70" Height="26" VerticalAlignment="Top" Margin="5,0"/>
+
+        </Grid>
+
+        <Button Grid.Row="2" Name="apply" Click="apply_Click" Content="Apply" Width="70" Height="26" Margin="157.5,5"/>
+    </Grid>
+</Window>

@@ -59,7 +59,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < bmp.Width; j++)
                 {
-                    bmp[i, j] = newValues[i, j];
+                    bmp[i, j] = Math.Abs(newValues[i, j]);
                 }
             }
         }
@@ -97,8 +97,21 @@ namespace CTSliceReconstruction
                         { -1, -1, -1 }
                     },
                     1, 1,
-                    "Laplacian"
+                    "Laplacian (3x3)"
                 );
+        }
+
+        public static ConvolutionFilter2D GetSharpen()
+        {
+            return new ConvolutionFilter2D(
+                new double[,] { 
+                    {  0, -1,  0 }, 
+                    { -1,  5, -1 },
+                    {  0, -1,  0 }
+                },
+                1,1,
+                "Laplacian Sharpening (3x3)"
+            );
         }
 
         public static ConvolutionFilter2D GetRoberts1()
@@ -118,75 +131,166 @@ namespace CTSliceReconstruction
                     "Roberts 2"
                 );
         }
-    }
 
-    public class LaplacianSharpening : Filter2D
-    {
-        private static LaplacianSharpening INSTANCE = new LaplacianSharpening();
-
-        public static LaplacianSharpening Instance
+        public static ConvolutionFilter2D GetKirsch1()
         {
-            get { return INSTANCE; }
+            return new ConvolutionFilter2D(
+                new double[,] {
+                    {  5,  5,  5 },
+                    { -3,  0, -3 },
+                    { -3, -3, -3 }
+                },
+                1, 1,
+                "Kirsch 1"
+            );
         }
 
-        private LaplacianSharpening() { }
+        public static ConvolutionFilter2D GetKirsch2()
+        {
+            return new ConvolutionFilter2D(
+                new double[,] {
+                    { -3, -3,  5 },
+                    { -3,  0,  5 },
+                    { -3, -3,  5 }
+                },
+                1, 1,
+                "Kirsch 2"
+            );
+        }
 
-        private Filter2D laplace = ConvolutionFilter2D.GetLaplace();
+        public static ConvolutionFilter2D GetLaplacianOfGaussian55()
+        {
+            return new ConvolutionFilter2D
+                (
+                    new double[,]
+                    {
+                        {   0,   0,   1,   0,   0 },
+                        {   0,   1,   2,   1,   0 },
+                        {   1,   2, -16,   2,   1 },
+                        {   0,   1,   2,   1,   0 },
+                        {   0,   0,   1,   0,   0 }
+                    },
+                    2, 2,
+                    "Laplacian of Gaussian (5x5)"
+                );
+        }
+
+        public static ConvolutionFilter2D GetLaplacianOfGaussian77()
+        {
+            return new ConvolutionFilter2D
+                (
+                    new double[,]
+                    {
+                        {   0,   0,   1,   1,   1,   0,   0 },
+                        {   0,   1,   3,   3,   3,   1,   0 },
+                        {   1,   3,   0,  -7,   0,   3,   1 },
+                        {   1,   3,  -7, -24,  -7,   3,   1 },
+                        {   1,   3,   0,  -7,   0,   3,   1 },
+                        {   0,   1,   3,   3,   3,   1,   0 },
+                        {   0,   0,   1,   1,   1,   0,   0 }
+                    },
+                    3, 3,
+                    "Laplacian of Gaussian (7x7)"
+                );
+        }
+    }
+
+    public class CompositeConvolutionFilter2D : Filter2D
+    {
+        ConvolutionFilter2D[] filters;
+        bool shouldAbs;
+        string name;
+
+        private CompositeConvolutionFilter2D(ConvolutionFilter2D[] filters, string name, bool shouldAbs = false)
+        {
+            this.filters = filters;
+            this.name = name;
+            this.shouldAbs = shouldAbs;
+        }
 
         public void Apply(GrayscaleBitmap bmp)
         {
-            GrayscaleBitmap laplaceBmp = bmp.Copy();
+            GrayscaleBitmap[] partialResults = new GrayscaleBitmap[filters.Length];
 
-            laplace.Apply(laplaceBmp);
+            for(int i = 0; i < filters.Length; i++)
+            {
+                partialResults[i] = bmp.Copy();
+
+                filters[i].Apply(partialResults[i]);
+            }
+
+            double normalizationCoeff = 1.0 / filters.Length;
 
             for (int i = 0; i < bmp.Height; i++)
             {
                 for (int j = 0; j < bmp.Width; j++)
                 {
-                    bmp[i, j] += laplaceBmp[i, j];
+                    bmp[i, j] = 0;
+                    foreach (var partialResult in partialResults)
+                    {
+                        bmp[i,j] += normalizationCoeff * (shouldAbs ? Math.Abs(partialResult[i,j]) : partialResult[i,j]);
+                    }
                 }
             }
         }
 
         public override string ToString()
         {
-            return "Laplacian Sharpening";
+            return name;
+        }
+
+        public static CompositeConvolutionFilter2D getRoberts()
+        {
+            return new CompositeConvolutionFilter2D(
+                    new ConvolutionFilter2D[] { ConvolutionFilter2D.GetRoberts1(), ConvolutionFilter2D.GetRoberts2() },
+                    "Roberts",
+                    true
+                );
+        }
+
+        public static CompositeConvolutionFilter2D getKirsch()
+        {
+            return new CompositeConvolutionFilter2D(
+                    new ConvolutionFilter2D[] { ConvolutionFilter2D.GetKirsch1(), ConvolutionFilter2D.GetKirsch2() },
+                    "Kirsch",
+                    true
+                );
         }
     }
 
-    public class EdgeDetectorRoberts : Filter2D
-    {
-        private static EdgeDetectorRoberts INSTANCE = new EdgeDetectorRoberts();
+    //public class EdgeDetectorRoberts : Filter2D
+    //{
+    //    private static EdgeDetectorRoberts INSTANCE = new EdgeDetectorRoberts();
 
-        public static EdgeDetectorRoberts Instance {
-            get { return INSTANCE; }
-        }
+    //    public static EdgeDetectorRoberts Instance {
+    //        get { return INSTANCE; }
+    //    }
 
-        private EdgeDetectorRoberts() { }
+    //    private EdgeDetectorRoberts() { }
 
-        private Filter2D roberts1 = ConvolutionFilter2D.GetRoberts1();
-        private Filter2D roberts2 = ConvolutionFilter2D.GetRoberts2();
+    //    private Filter2D roberts1 = ConvolutionFilter2D.GetRoberts1();
+    //    private Filter2D roberts2 = ConvolutionFilter2D.GetRoberts2();
 
-        public void Apply(GrayscaleBitmap bmp)
-        {
-            GrayscaleBitmap robertsBmp1 = bmp.Copy();
-            GrayscaleBitmap robertsBmp2 = bmp.Copy();
+    //    public void Apply(GrayscaleBitmap bmp)
+    //    {
+    //        GrayscaleBitmap robertsBmp1 = bmp.Copy();
+    //        GrayscaleBitmap robertsBmp2 = bmp.Copy();
 
-            roberts1.Apply(robertsBmp1);
-            roberts2.Apply(robertsBmp2);
+    //        roberts1.Apply(robertsBmp1);
+    //        roberts2.Apply(robertsBmp2);
 
-            for (int i = 0; i < bmp.Height; i++)
-            {
-                for (int j = 0; j < bmp.Width; j++)
-                {
-                    bmp[i, j] = Math.Abs(robertsBmp1[i, j]) + Math.Abs(robertsBmp2[i, j]);
-                }
-            }
-        }
+    //        for (int i = 0; i < bmp.Height; i++)
+    //        {
+    //            for (int j = 0; j < bmp.Width; j++)
+    //            {
+    //                bmp[i, j] = 0.5 * (Math.Abs(robertsBmp1[i, j]) + Math.Abs(robertsBmp2[i, j]));
+    //            }
+    //        }
+    //    }
 
-        public override string ToString()
-        {
-            return "Edge detection (Roberts)";
-        }
-    }
+    //    public override string ToString()
+    //    {
+    //        return "Edge detection (Roberts)";
+    //    }
+    //}
 }

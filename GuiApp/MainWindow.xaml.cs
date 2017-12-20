@@ -43,8 +43,12 @@ namespace GuiApp
 
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetGauss55());
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplace());
-            sinogramFilter.Items.Add(EdgeDetectorRoberts.Instance);
-            sinogramFilter.Items.Add(LaplacianSharpening.Instance);
+            sinogramFilter.Items.Add(ConvolutionFilter2D.GetSharpen());
+            sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplacianOfGaussian55());
+            sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplacianOfGaussian77());
+            //sinogramFilter.Items.Add(EdgeDetectorRoberts.Instance);
+            sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getRoberts());
+            sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getKirsch());
             sinogramFilter.SelectedIndex = 0;
         }
 
@@ -88,6 +92,7 @@ namespace GuiApp
             projections = SinogramHandler.SinogramToProjections(sinogram);
 
             GrayscaleBitmap result;
+            IterativeSliceReconstructor passedReconstructor = null;
 
             setState("Reconstructing");
             if ((String)reconstructionAlgorithm.SelectedItem == "Back projection")
@@ -100,14 +105,14 @@ namespace GuiApp
             {
                 IterativeSliceReconstructor reconstructor = new IterativeSliceReconstructor(projections, 180.0 / (double)numberOfProjections.Value, (ProjectionHandler)projectionAlgorithm.SelectedItem, (bool)allowNegativeValuesCheckBox.IsChecked);
                 result = reconstructor.Reconstruct((int)numberOfIterations.Value, progressCounter);
-                
+                passedReconstructor = reconstructor;
             }
 
             setState("Nothing to do");
 
             progressCounter.Reset();
 
-            ResultWindow resultWnd = new ResultWindow(sinogram, result);
+            ResultWindow resultWnd = new ResultWindow(sinogram, result, passedReconstructor);
             resultWnd.Show();
         }
 

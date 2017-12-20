@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
-    public  abstract class SliceReconstructor
+    public abstract class SliceReconstructor
     {
         protected List<double[]> projections;
         protected double angleBetweenProjections;

@@ -164,6 +164,11 @@ namespace CTSliceReconstruction
             }
         }
 
+        public void InvalidateSystemBitmap()
+        {
+            this.bmp = null;
+        }
+
         private double getValueAcceptableForSystemBitmap(int i, int j)
         {
             double value = this[i, j];
