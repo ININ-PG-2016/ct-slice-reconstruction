@@ -69,7 +69,7 @@ namespace GuiApp
                 steps = (int)numberOfProjections.Value;
             else
                 steps = (int)numberOfIterations.Value;
-            ProgressCounter progressCounter = new ProgessCounterGUI((int)numberOfProjections.Value + steps, progressBar);
+            ProgressCounter progressCounter = new ProgressCounterGUI((int)numberOfProjections.Value + steps, progressBar);
             setState("Loading input image");
             GrayscaleBitmap bmp = new GrayscaleBitmap(inputPicture.Text);
             bmp = bmp.CreateSquareBitmap();

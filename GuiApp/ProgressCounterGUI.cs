@@ -10,11 +10,11 @@ using System.Windows.Threading;
 
 namespace GuiApp
 {
-    class ProgessCounterGUI : ProgressCounter
+    class ProgressCounterGUI : ProgressCounter
     {
         private ProgressBar progressBar;
 
-        public ProgessCounterGUI(int maxSteps, ProgressBar progressBar) : base(maxSteps)
+        public ProgressCounterGUI(int maxSteps, ProgressBar progressBar) : base(maxSteps)
         {
             progressBar.Value = 0;
             progressBar.Maximum = maxSteps;

@@ -37,10 +37,14 @@ namespace GuiApp
             {
                 moreIterationsBtn.Visibility = Visibility.Visible;
                 moreIterationsCount.Visibility = Visibility.Visible;
+                progressBar.Visibility = Visibility.Visible;
                 moreIterationsColumn.Width = new GridLength(1, GridUnitType.Star);
             }
             else
             {
+                moreIterationsBtn.Visibility = Visibility.Hidden;
+                moreIterationsCount.Visibility = Visibility.Hidden;
+                progressBar.Visibility = Visibility.Hidden;
                 moreIterationsColumn.Width = new GridLength(0);
             }
         }
@@ -64,8 +68,10 @@ namespace GuiApp
 
         private void moreIterationsBtn_Click(object sender, RoutedEventArgs e)
         {
-            result = reconstructor.PerformAdditionalIterations(moreIterationsCount.Value.GetValueOrDefault());
+            ProgressCounterGUI progressCounter = new ProgressCounterGUI(moreIterationsCount.Value.GetValueOrDefault(), progressBar);
+            result = reconstructor.PerformAdditionalIterations(moreIterationsCount.Value.GetValueOrDefault(), progressCounter);
             resultImg.Source = PrepareBitmap(result.Bmp);
+            progressCounter.Reset();
         }
 
         public void ApplyFilters(ItemCollection selectedFilters)

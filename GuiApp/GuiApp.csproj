@@ -101,7 +101,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProgessCounterGUI.cs" />
+    <Compile Include="ProgressCounterGUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -6,13 +6,13 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="ResultWindow" Height="706" Width="920">
+        Title="ResultWindow" Height="719.5" Width="920">
     <Grid>
         <Image HorizontalAlignment="Left" Height="600" Margin="302,10,0,0" Name="resultImg" VerticalAlignment="Top" Width="600"/>
         <Image HorizontalAlignment="Left" Height="600" Margin="10,10,0,0" Name="sinogramImg" VerticalAlignment="Top" Width="278"/>
-        <Grid HorizontalAlignment="Left" Height="60" Margin="10,605,0,0" VerticalAlignment="Top" Width="892">
+        <Grid HorizontalAlignment="Left" Height="61" Margin="10,628,0,0" VerticalAlignment="Top" Width="892">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Name="moreIterationsColumn" Width="0"/>
+                <ColumnDefinition Name="moreIterationsColumn" Width="300"/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -22,8 +22,9 @@
                     <ColumnDefinition Width="140"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <xctk:IntegerUpDown Name="moreIterationsCount" Visibility="Hidden" Grid.Column="0" Height="26" VerticalAlignment="Center" Minimum="1" Value="10" Margin="5,5,0,5"/>
-                <Button Grid.Row="0" Grid.Column="1" Name="moreIterationsBtn" Visibility="Hidden" Content="More iterations" Width="100" Height="26" Click="moreIterationsBtn_Click"/>
+                <xctk:IntegerUpDown Name="moreIterationsCount" Visibility="Visible" Grid.Column="0" Height="28" VerticalAlignment="Center" Minimum="1" Value="10" Margin="5,-2,0,31"/>
+                <Button Grid.Row="0" Grid.Column="1" Name="moreIterationsBtn" Visibility="Visible" Content="More iterations" Click="moreIterationsBtn_Click" Margin="30,0,28,32"/>
+                <ProgressBar x:Name="progressBar" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="18" Margin="0,33,0,0" VerticalAlignment="Top" Width="290"/>
             </Grid>
 
 
