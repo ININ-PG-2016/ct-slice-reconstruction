@@ -79,7 +79,7 @@ namespace CTSliceReconstruction
             return ret;
         }
 
-        public GrayscaleBitmap PerformAdditionalIterations(int iterationCount)
+        public GrayscaleBitmap PerformAdditionalIterations(int iterationCount, ProgressCounter progressCounter = null)
         {
             if (currentReconstruction == null)
                 throw new NullReferenceException("The Reconstruct method must be called first");
@@ -88,6 +88,7 @@ namespace CTSliceReconstruction
                 lastIterationNumber++;
                 Console.WriteLine("Iteration: " + lastIterationNumber);
                 performOneIteration(lastIterationNumber % projections.Count, currentReconstruction);
+                progressCounter?.AddStep();
             }
             GrayscaleBitmap ret = new GrayscaleBitmap(currentReconstruction.Width, currentReconstruction.Height);
             for (int i = 0; i < currentReconstruction.Width; i++)
