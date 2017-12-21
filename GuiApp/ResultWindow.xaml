@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="ResultWindow" Height="719.5" Width="920">
+        Title="ResultWindow" Height="719.5" Width="920" ResizeMode="CanMinimize">
     <Grid>
         <Image HorizontalAlignment="Left" Height="600" Margin="302,10,0,0" Name="resultImg" VerticalAlignment="Top" Width="600"/>
         <Image HorizontalAlignment="Left" Height="600" Margin="10,10,0,0" Name="sinogramImg" VerticalAlignment="Top" Width="278"/>

@@ -41,6 +41,10 @@ namespace GuiApp
             projectionFilter.Items.Add(Filter1D.GetHammingFilter3());
             projectionFilter.Items.Add(Filter1D.GetLaplaceFilter());
             projectionFilter.Items.Add(Filter1D.GetLaplaceSharpeningFilter());
+            projectionFilter.Items.Add(Filter1D.GetUnsharpMaskingGaussianFilter());
+            projectionFilter.Items.Add(Filter1D.GetUnsharpMaskingHammingFilter1());
+            projectionFilter.Items.Add(Filter1D.GetUnsharpMaskingHammingFilter2());
+            projectionFilter.Items.Add(Filter1D.GetUnsharpMaskingHammingFilter3());
             projectionFilter.Items.Add(Filter1D.GetMultiplicativeNoiseFilter());
             projectionFilter.Items.Add(Filter1D.GetAdditiveNoiseFilter());
             projectionFilter.SelectedIndex = 0;
@@ -66,6 +70,7 @@ namespace GuiApp
 
         private void runBtn_Click(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = false;
             int steps = 0;
             if ((String)reconstructionAlgorithm.SelectedItem == "Back projection")
                 steps = (int)numberOfProjections.Value;
@@ -120,6 +125,7 @@ namespace GuiApp
 
             ResultWindow resultWnd = new ResultWindow(sinogram, result, passedReconstructor);
             resultWnd.Show();
+            this.IsEnabled = true;
         }
 
         private void loadPictureBtn_Click(object sender, RoutedEventArgs e)

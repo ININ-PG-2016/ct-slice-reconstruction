@@ -69,10 +69,12 @@ namespace GuiApp
 
         private void moreIterationsBtn_Click(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = false;
             ProgressCounterGUI progressCounter = new ProgressCounterGUI(moreIterationsCount.Value.GetValueOrDefault(), progressBar);
             result = reconstructor.PerformAdditionalIterations(moreIterationsCount.Value.GetValueOrDefault(), progressCounter);
             resultImg.Source = PrepareBitmap(result.Bmp);
             progressCounter.Reset();
+            this.IsEnabled = true;
         }
 
         public void ApplyFilters(ItemCollection selectedFilters)
