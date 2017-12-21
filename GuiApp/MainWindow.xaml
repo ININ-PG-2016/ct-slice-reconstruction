@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="CT Slice Reconstruction" Height="552" Width="1215" ResizeMode="CanMinimize">
+        Title="CT Slice Reconstruction" Height="552" Width="1215" ResizeMode="CanMinimize" Closed="Window_Closed">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -166,5 +166,6 @@
         </ProgressBar>
         <Image x:Name="inputImage" HorizontalAlignment="Left" Height="400" Margin="798,52,0,0" Grid.RowSpan="3" VerticalAlignment="Top" Width="400"/>
         <Label x:Name="label1" Content="Input image:" HorizontalAlignment="Left" Margin="798,24,0,0" VerticalAlignment="Top" Height="28" Width="103"/>
+        <Button x:Name="saveInputBtn" Content="Save Input Image" HorizontalAlignment="Left" Margin="940,25,0,0" Grid.Row="3" VerticalAlignment="Top" Width="114" Click="saveInputBtn_Click"/>
     </Grid>
 </Window>

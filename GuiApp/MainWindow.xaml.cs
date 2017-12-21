@@ -24,10 +24,12 @@ namespace GuiApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GrayscaleBitmap inputBitmap = null;
         public MainWindow()
         {
             InitializeComponent();
             this.Width = 800;
+            saveInputBtn.Visibility = Visibility.Hidden;
             projectionAlgorithm.Items.Add(new ProjectionHandlerRaycast());
             projectionAlgorithm.Items.Add(new ProjectionHandlerBresenham());
             projectionAlgorithm.SelectedIndex = 0;
@@ -135,9 +137,11 @@ namespace GuiApp
             if (openDialog.ShowDialog() == true)
             {
                 inputPicture.Text = openDialog.FileName;
-                System.Drawing.Bitmap img = new GrayscaleBitmap(inputPicture.Text).CreateSquareBitmap().Bmp;
+                inputBitmap = new GrayscaleBitmap(inputPicture.Text).CreateSquareBitmap();
+                System.Drawing.Bitmap img = inputBitmap.Bmp;
                 inputImage.Source = PrepareBitmap(img);
                 this.Width = 1220;
+                saveInputBtn.Visibility = Visibility.Visible;
             }
         }
 
@@ -202,6 +206,22 @@ namespace GuiApp
         private void clearSinogramFilterBtn_Click(object sender, RoutedEventArgs e)
         {
             sinogramFilterList.Items.Clear();
+        }
+
+        private void saveInputBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Image files|*.bmp";
+            if (dialog.ShowDialog() == true)
+            {
+                string path = dialog.FileName;
+                inputBitmap.SaveToFile(path);
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
