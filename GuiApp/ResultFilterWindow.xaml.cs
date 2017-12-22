@@ -37,7 +37,7 @@ namespace GuiApp
             resultFilter.Items.Add(CompositeConvolutionFilter2D.getRoberts());
             resultFilter.Items.Add(CompositeConvolutionFilter2D.getKirsch());
             resultFilter.Items.Add(new RemoveNegativeValuesFilter());
-            resultFilter.Items.Add(new AbsoluteValueFilter());
+            //resultFilter.Items.Add(new AbsoluteValueFilter());
             resultFilter.SelectedIndex = 0;
         }
 
