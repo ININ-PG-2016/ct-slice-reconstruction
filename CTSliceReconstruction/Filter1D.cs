@@ -19,7 +19,7 @@ namespace CTSliceReconstruction
             this.name = name;
         }
 
-        private double applyToIndex(double[] values, int index)
+        public virtual double applyToIndex(double[] values, int index)
         {
             double sum = 0;
             for (int i = 0; i < filterValues.Length; i++)
@@ -84,6 +84,26 @@ namespace CTSliceReconstruction
             }, 2, "Gaussian (Length: 5)");
         }
 
+        public static Filter1D GetUnsharpMaskingGaussianFilter()
+        {
+            return new UnsharpMaskingFilter(GetGaussianFilter(), "Sharpening by Unsharp Masking (Gaussian - Length: 5)");
+        }
+
+        public static Filter1D GetUnsharpMaskingHammingFilter1()
+        {
+            return new UnsharpMaskingFilter(GetHammingFilter1(), "Sharpening by Unsharp Masking (Hamming - Length: 5)");
+        }
+
+        public static Filter1D GetUnsharpMaskingHammingFilter2()
+        {
+            return new UnsharpMaskingFilter(GetHammingFilter2(), "Sharpening by Unsharp Masking (Hamming - Length: 7)");
+        }
+
+        public static Filter1D GetUnsharpMaskingHammingFilter3()
+        {
+            return new UnsharpMaskingFilter(GetHammingFilter3(), "Sharpening by Unsharp Masking (Hamming - Length: 9)");
+        }
+
         public static Filter1D GetMultiplicativeNoiseFilter()
         {
             return new MultiplicativeNoiseFilter1D();
@@ -92,6 +112,21 @@ namespace CTSliceReconstruction
         public static Filter1D GetAdditiveNoiseFilter()
         {
             return new AdditiveNoiseFilter1D();
+        }
+    }
+
+    class UnsharpMaskingFilter : Filter1D
+    {
+        private Filter1D blurFilter;
+
+        public UnsharpMaskingFilter(Filter1D blurFilter, String name) : base(null, 0, name)
+        {
+            this.blurFilter = blurFilter;
+        }
+
+        public override double applyToIndex(double[] values, int index)
+        {
+            return 2 * values[index] - blurFilter.applyToIndex(values, index);
         }
     }
 
