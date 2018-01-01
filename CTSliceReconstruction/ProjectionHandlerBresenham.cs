@@ -74,7 +74,7 @@ namespace CTSliceReconstruction
 
             foreach(var intersection in intersections)
             {
-                Point p = new Point((int)(Math.Round(intersection.x - min)), (int)(Math.Round(intersection.y - min)));
+                Point p = new Point((int)(Math.Round(intersection.x - min - 0.5)), (int)(Math.Round(intersection.y - min - 0.5)));
 
                 if (p.i == n)
                 {
@@ -84,6 +84,16 @@ namespace CTSliceReconstruction
                 if (p.j == n)
                 {
                     p.j = n - 1;
+                }
+
+                if (p.i == -1)
+                {
+                    p.i = 0;
+                }
+
+                if (p.j == -1)
+                {
+                    p.j = 0;
                 }
 
                 intersectionPoints.Add(p);
@@ -124,7 +134,12 @@ namespace CTSliceReconstruction
 
             if (deltaX == 0)
             {
-                return VerticalLine(x0, (int)Math.Abs(deltaY));
+                return VerticalLine(x0, (int)Math.Abs(deltaY) + 1);
+            }
+
+            if (deltaY == 0)
+            {
+                return HorizontalLine(y0, (int)Math.Abs(deltaX) + 1);
             }
 
             double deltaErr = Math.Abs(deltaY / deltaX);
@@ -142,6 +157,12 @@ namespace CTSliceReconstruction
                 while (error >= 0.5)
                 {
                     y += Math.Sign(deltaY);
+
+                    if ((deltaY > 0 && y <= y1) || (deltaY < 0 && y >= y1))
+                    {
+                        line.Add(new PixelInfo(x, y, 1.0));
+                    }
+                    
                     error -= 1.0;
                 }
             }

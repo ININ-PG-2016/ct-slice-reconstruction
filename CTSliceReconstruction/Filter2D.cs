@@ -59,7 +59,7 @@ namespace CTSliceReconstruction
             {
                 for (int j = 0; j < bmp.Width; j++)
                 {
-                    bmp[i, j] = Math.Abs(newValues[i, j]);
+                    bmp[i, j] = newValues[i, j];
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace CTSliceReconstruction
 
         public override string ToString()
         {
-            return "Negative value remover";
+            return "Negative value remover (Zeroing)";
         }
     }
 
@@ -289,5 +289,10 @@ namespace CTSliceReconstruction
             }
         }
 
+
+        public override string ToString()
+        {
+            return "Negative value remover (Abs)";
+        }
     }
 }

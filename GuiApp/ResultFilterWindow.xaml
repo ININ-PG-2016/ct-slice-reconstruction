@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="Result filtering" Height="270" Width="447.5">
+        Title="Result filtering" Height="270" Width="447.5" ResizeMode="CanMinimize">
     <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center" Width="385" Margin="10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>

@@ -60,7 +60,7 @@ namespace GuiApp
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getRoberts());
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getKirsch());
             sinogramFilter.Items.Add(new RemoveNegativeValuesFilter());
-            //sinogramFilter.Items.Add(new AbsoluteValueFilter());
+            sinogramFilter.Items.Add(new AbsoluteValueFilter());
             sinogramFilter.SelectedIndex = 0;
         }
 
