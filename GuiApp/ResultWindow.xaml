@@ -6,11 +6,11 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:GuiApp"
         mc:Ignorable="d"
-        Title="ResultWindow" Height="719.5" Width="920" ResizeMode="CanMinimize">
+        Title="Reconstruction Result" Height="745" Width="920" ResizeMode="CanMinimize">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="600" Margin="302,10,0,0" Name="resultImg" VerticalAlignment="Top" Width="600"/>
-        <Image HorizontalAlignment="Left" Height="600" Margin="10,10,0,0" Name="sinogramImg" VerticalAlignment="Top" Width="278"/>
-        <Grid HorizontalAlignment="Left" Height="61" Margin="10,628,0,0" VerticalAlignment="Top" Width="892">
+        <Image HorizontalAlignment="Left" Height="600" Margin="302,26,0,0" Name="resultImg" VerticalAlignment="Top" Width="600"/>
+        <Image HorizontalAlignment="Left" Height="600" Margin="10,26,0,0" Name="sinogramImg" VerticalAlignment="Top" Width="278"/>
+        <Grid HorizontalAlignment="Left" Height="61" Margin="10,646,0,0" VerticalAlignment="Top" Width="892">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="moreIterationsColumn" Width="300"/>
                 <ColumnDefinition/>
@@ -31,6 +31,8 @@
             <Button Grid.Row="0" Grid.Column="1" Name="filterResultBtn" Click="filterResultBtn_Click" Content="Filter result" Width="100" Height="26"/>
             <Button Grid.Row="0" Grid.Column="2" Name="saveResultBtn" Click="saveResultBtn_Click" Content="Save result" Width="100" Height="26"/>
         </Grid>
+        <Label Content="Sinogram:" Height="28" Margin="10,0,626,680" Width="278" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <Label Content="Result:" Height="28" Margin="304,0,10,680" Width="600" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 
 
     </Grid>
