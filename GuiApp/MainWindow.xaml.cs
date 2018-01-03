@@ -56,7 +56,6 @@ namespace GuiApp
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetSharpen());
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplacianOfGaussian55());
             sinogramFilter.Items.Add(ConvolutionFilter2D.GetLaplacianOfGaussian77());
-            //sinogramFilter.Items.Add(EdgeDetectorRoberts.Instance);
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getRoberts());
             sinogramFilter.Items.Add(CompositeConvolutionFilter2D.getKirsch());
             sinogramFilter.Items.Add(new RemoveNegativeValuesFilter());

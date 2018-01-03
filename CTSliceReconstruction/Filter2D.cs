@@ -6,11 +6,22 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
+    /// <summary>
+    /// 2D filter to apply on GrayscaleBitmap
+    /// </summary>
     public interface Filter2D
     {
+        /// <summary>
+        /// Applies filter on given bitmap
+        /// </summary>
+        /// <param name="bmp">Bitmap to be filtered</param>
         void Apply(GrayscaleBitmap bmp);
     }
 
+    /// <summary>
+    /// 2D convolution filter
+    /// It is required to specify mask, origin of the filter and its name
+    /// </summary>
     public class ConvolutionFilter2D : Filter2D
     {
         private double[,] filterValues;
@@ -25,6 +36,14 @@ namespace CTSliceReconstruction
             this.originJ = originJ;
             this.name = name;
         }
+
+        /// <summary>
+        /// Applies filter on given bitmap on given position
+        /// </summary>
+        /// <param name="bmp">Filtered bitmap</param>
+        /// <param name="i">I Position</param>
+        /// <param name="j">J Position</param>
+        /// <returns>Result of applied filter</returns>
         private double applyToPosition(GrayscaleBitmap bmp, int i, int j)
         {
             double sum = 0.0;
@@ -44,6 +63,10 @@ namespace CTSliceReconstruction
             return sum;
         }
 
+        /// <summary>
+        /// Applies filter on given bitmap
+        /// </summary>
+        /// <param name="bmp">Bitmap to be filtered</param>
         public void Apply(GrayscaleBitmap bmp)
         {
             double[,] newValues = new double[bmp.Height, bmp.Width];
@@ -69,6 +92,10 @@ namespace CTSliceReconstruction
             return name;
         }
 
+        /// <summary>
+        /// Gaussian blur of size 5x5
+        /// </summary>
+        /// <returns>Instance of Gaussian Blur</returns>
         public static ConvolutionFilter2D GetGauss55()
         {
             return new ConvolutionFilter2D
@@ -86,6 +113,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// Laplace filter
+        /// </summary>
+        /// <returns>Instance of Laplace filter</returns>
         public static ConvolutionFilter2D GetLaplace()
         {
             return new ConvolutionFilter2D
@@ -101,6 +132,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// Laplacian sharpening filter of size 3x3
+        /// </summary>
+        /// <returns>Instance of Laplacian sharpening filter</returns>
         public static ConvolutionFilter2D GetSharpen()
         {
             return new ConvolutionFilter2D(
@@ -114,6 +149,10 @@ namespace CTSliceReconstruction
             );
         }
 
+        /// <summary>
+        /// First mask of Roberts edge operator
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetRoberts1()
         {
             return new ConvolutionFilter2D(
@@ -123,6 +162,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// Second mask of Roberts edge operator
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetRoberts2()
         {
             return new ConvolutionFilter2D(
@@ -132,6 +175,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// First mask of Kirsch edge operator
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetKirsch1()
         {
             return new ConvolutionFilter2D(
@@ -145,6 +192,10 @@ namespace CTSliceReconstruction
             );
         }
 
+        /// <summary>
+        /// Second mask of Kirsch edge operator
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetKirsch2()
         {
             return new ConvolutionFilter2D(
@@ -158,6 +209,10 @@ namespace CTSliceReconstruction
             );
         }
 
+        /// <summary>
+        /// Mask of Laplacian of Gaussian of size 5x5
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetLaplacianOfGaussian55()
         {
             return new ConvolutionFilter2D
@@ -175,6 +230,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// Mask of Laplacian of Gaussian of size 7x7
+        /// </summary>
+        /// <returns></returns>
         public static ConvolutionFilter2D GetLaplacianOfGaussian77()
         {
             return new ConvolutionFilter2D
@@ -195,6 +254,9 @@ namespace CTSliceReconstruction
         }
     }
 
+    /// <summary>
+    /// Filter composed from multiple Convolution filters
+    /// </summary>
     public class CompositeConvolutionFilter2D : Filter2D
     {
         ConvolutionFilter2D[] filters;
@@ -208,6 +270,10 @@ namespace CTSliceReconstruction
             this.shouldAbs = shouldAbs;
         }
 
+        /// <summary>
+        /// Apply filter on given bitmap
+        /// </summary>
+        /// <param name="bmp">Filtered bitmap</param>
         public void Apply(GrayscaleBitmap bmp)
         {
             GrayscaleBitmap[] partialResults = new GrayscaleBitmap[filters.Length];
@@ -228,6 +294,7 @@ namespace CTSliceReconstruction
                     bmp[i, j] = 0;
                     foreach (var partialResult in partialResults)
                     {
+                        //some filters require absolute value of partial results
                         bmp[i,j] += normalizationCoeff * (shouldAbs ? Math.Abs(partialResult[i,j]) : partialResult[i,j]);
                     }
                 }
@@ -239,6 +306,10 @@ namespace CTSliceReconstruction
             return name;
         }
 
+        /// <summary>
+        /// Edge detection filter based on Roberts edge operator
+        /// </summary>
+        /// <returns></returns>
         public static CompositeConvolutionFilter2D getRoberts()
         {
             return new CompositeConvolutionFilter2D(
@@ -248,6 +319,10 @@ namespace CTSliceReconstruction
                 );
         }
 
+        /// <summary>
+        /// Edge detection filter based on Kirsch edge operator
+        /// </summary>
+        /// <returns></returns>
         public static CompositeConvolutionFilter2D getKirsch()
         {
             return new CompositeConvolutionFilter2D(
@@ -258,6 +333,9 @@ namespace CTSliceReconstruction
         }
     }
 
+    /// <summary>
+    /// Filter for zeroing Negative values
+    /// </summary>
     public class RemoveNegativeValuesFilter : Filter2D
     {
         public void Apply(GrayscaleBitmap bmp)
@@ -277,6 +355,9 @@ namespace CTSliceReconstruction
         }
     }
 
+    /// <summary>
+    /// Filter for removing negative values by absolute value
+    /// </summary>
     public class AbsoluteValueFilter : Filter2D
     {
         public void Apply(GrayscaleBitmap bmp) {

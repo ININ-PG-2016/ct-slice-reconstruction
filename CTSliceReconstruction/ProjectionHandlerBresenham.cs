@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
+    /// <summary>
+    /// Projection handler based on Bresenhams line algorithm
+    /// </summary>
     public class ProjectionHandlerBresenham : ProjectionHandler
     {
+        /// <summary>
+        /// Generates line representing x-ray of given angle and position.
+        /// N determines the size of bitmap
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="n"></param>
+        /// <param name="position"></param>
+        /// <returns>Line of intersected pixels of given bitmap</returns>
         public override List<PixelInfo> generateLine(double angle, int n, int position)
         {
             //Generate line
@@ -18,6 +29,7 @@ namespace CTSliceReconstruction
 
             List<PixelInfo> line;
 
+            //single point intersection must be handled separately
             if (intersections.Count == 1)
             {
 
@@ -26,18 +38,26 @@ namespace CTSliceReconstruction
 
                 line.Add(new PixelInfo(point.i, point.j, 1.0));
             }
+            //two point intersection
             else
             {
                 Point p0 = intersections[0];
                 Point p1 = intersections[1];
 
+                //perform bresenham line algorithm between the two points
                 line = bresenhamLine(p0.i, p0.j, p1.i, p1.j);
             }
 
-            //Calculate intersected pixels on boundary
             return line;
         }
 
+        /// <summary>
+        /// Returns ray specified by given angle, position and size of bitmap to be intersected
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="n"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         private Line calculateRay(double angle, int n, int position)
         {
             double radAngle = angle * (Math.PI / 180);
@@ -65,6 +85,8 @@ namespace CTSliceReconstruction
 
             processIntersection(ray, n, ray.GetIntersectionWithHorizontalLine(max), intersections, false);
 
+
+            //to simplify bresenhams algorithm, the points are sorted by x-coordinate
             intersections.Sort(delegate (Vector2D v1, Vector2D v2)
             {
                 return v1.x.CompareTo(v2.x);
@@ -76,6 +98,7 @@ namespace CTSliceReconstruction
             {
                 Point p = new Point((int)(Math.Round(intersection.x - min - 0.5)), (int)(Math.Round(intersection.y - min - 0.5)));
 
+                //if intersection is falsely detected outside of bitmap, correct the coordinates
                 if (p.i == n)
                 {
                     p.i = n - 1;
@@ -102,6 +125,15 @@ namespace CTSliceReconstruction
             return intersectionPoints;
         }
 
+        /// <summary>
+        /// Check whether the intersection with line going through the bitmap boundary is also intersection with the boundary
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <param name="n"></param>
+        /// <param name="param"></param>
+        /// <param name="intersections"></param>
+        /// <param name="isVertical"></param>
+        /// <returns></returns>
         private bool processIntersection(Line ray, int n, double param, List<Vector2D> intersections, bool isVertical)
         {
             if (double.IsNaN(param))
@@ -125,6 +157,14 @@ namespace CTSliceReconstruction
             return false;
         }
 
+        /// <summary>
+        /// Implementation of Bresenhams Line algorithm
+        /// </summary>
+        /// <param name="x0">X-coordinate of first pixel</param>
+        /// <param name="y0">Y-coordinate of first pixel</param>
+        /// <param name="x1">X-coordinate of last pixel</param>
+        /// <param name="y1">Y-coordinate of last pixel</param>
+        /// <returns>Raster line between first and last pixel</returns>
         public List<PixelInfo> bresenhamLine(int x0, int y0, int x1, int y1)
         {
             List<PixelInfo> line = new List<PixelInfo>();
@@ -132,6 +172,7 @@ namespace CTSliceReconstruction
             double deltaX = x1 - x0;
             double deltaY = y1 - y0;
 
+            //if the line is horizontal or vertical, the generating process is simplified
             if (deltaX == 0)
             {
                 return VerticalLine(x0, (int)Math.Abs(deltaY) + 1);
@@ -142,6 +183,7 @@ namespace CTSliceReconstruction
                 return HorizontalLine(y0, (int)Math.Abs(deltaX) + 1);
             }
 
+            //calculate the increment of error by performing one step in the x-coordinate
             double deltaErr = Math.Abs(deltaY / deltaX);
 
             double error = 0.0;
@@ -152,8 +194,10 @@ namespace CTSliceReconstruction
             {
                 line.Add(new PixelInfo(x, y, 1.0));
 
+                //perform one step in x-coordinate and increase the error
                 error += deltaErr;
 
+                //if the error is bigger than threshold, adjust y-coordinate
                 while (error >= 0.5)
                 {
                     y += Math.Sign(deltaY);

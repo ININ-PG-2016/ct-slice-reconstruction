@@ -9,12 +9,26 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
+    /// <summary>
+    /// Grayscale bitmap image
+    /// </summary>
     public class GrayscaleBitmap
     {
+        /// <summary>
+        /// data of the bitmap
+        /// </summary>
         private double[] data;
+
+        /// <summary>
+        /// System bitmap used for IO and GUI
+        /// </summary>
         private System.Drawing.Bitmap bmp;
+
         private int actualWidth;
 
+        /// <summary>
+        /// Flag representing whether a Stretch should be performed on all bitmaps before creating the system representation
+        /// </summary>
         public static bool ShouldNormalize = true;
 
         public GrayscaleBitmap(string path)
@@ -24,8 +38,8 @@ namespace CTSliceReconstruction
             //Only supported format is 8bpp Indexed
             if (bmp.PixelFormat != PixelFormat.Format8bppIndexed)
             {
+                //Any other format is converted
                 this.bmp = convertToGrayscale(this.bmp);
-                //throw new Exception("Unsupported pixel format of the image. Only 8bbp gray level format is supported.");
             }
 
             Width = bmp.Width;
@@ -59,19 +73,6 @@ namespace CTSliceReconstruction
 
         private System.Drawing.Bitmap convertToGrayscale(System.Drawing.Bitmap bmp)
         {
-            /*System.Drawing.Bitmap newBmp = new System.Drawing.Bitmap(bmp.Width, bmp.Height, PixelFormat.Format8bppIndexed);
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = newBmp.LockBits(rect, ImageLockMode.WriteOnly, newBmp.PixelFormat);
-            for (int i = 0; i < bmp.Width; i++)
-            {
-                for (int j = 0; j < bmp.Height; j++)
-                {
-                    Color col = bmp.GetPixel(i, j);
-                    int grayLevel = (col.R + col.G + col.B) / 3;
-
-                }
-            }
-            return newBmp;*/
             return AForge.Imaging.Filters.Grayscale.CommonAlgorithms.BT709.Apply(bmp);
         }
 
@@ -166,26 +167,12 @@ namespace CTSliceReconstruction
             }
         }
 
+        /// <summary>
+        /// Used to regenerate the system bitmap next time it will be referenced
+        /// </summary>
         public void InvalidateSystemBitmap()
         {
             this.bmp = null;
-        }
-
-        private double getValueAcceptableForSystemBitmap(int i, int j)
-        {
-            double value = this[i, j];
-
-            if (value < 0.0)
-            {
-                return 0.0;
-            }
-
-            if (value > 1.0)
-            {
-                return 1.0;
-            }
-
-            return value;
         }
 
         /// <summary>

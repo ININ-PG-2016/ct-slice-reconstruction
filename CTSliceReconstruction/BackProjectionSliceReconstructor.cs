@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CTSliceReconstruction
 {
+    /// <summary>
+    /// Slice reconstructor based on Backprojection method (also called Summation method)
+    /// </summary>
     public class BackProjectionSliceReconstructor : SliceReconstructor
     {
         
@@ -17,6 +20,11 @@ namespace CTSliceReconstruction
             this.projectionHandler = projectionHandler;
         }
 
+        /// <summary>
+        /// Reconstructs the image from projections specified in constructor
+        /// </summary>
+        /// <param name="progressCounter"></param>
+        /// <returns>Reconstructed image</returns>
         public GrayscaleBitmap Reconstruct(ProgressCounter progressCounter = null)
         {
             int size = projections[0].Length;
@@ -27,8 +35,10 @@ namespace CTSliceReconstruction
             {
                 double angle = angleBetweenProjections * i;
 
+                //Extrude projection in given angle
                 GrayscaleBitmap extrudedProjection = projectionHandler.ExtrudeProjection(projections[i], angle);
 
+                //add given extruded projection to the result
                 bmp += extrudedProjection;
                 progressCounter?.AddStep();
             }
